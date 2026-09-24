@@ -362,9 +362,9 @@ function mostrarClientes() {
     <div class="card">
       <div class="client">
         ${
-          c.foto
-          ? `<img class="avatar" src="${c.foto}">`
-          : `<div class="avatar"></div>`
+    (Array.isArray(c.fotos) ? c.fotos : (c.foto ? [c.foto] : []))
+        .map(foto => `<img class="avatar" src="${foto}">`)
+        .join("")
         }
 
         <div class="client-info">
