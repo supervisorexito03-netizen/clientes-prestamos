@@ -310,7 +310,8 @@ function guardarCliente() {
     cuota: document.getElementById("cuota").value,
     fecha: document.getElementById("fecha").value,
     observaciones: document.getElementById("observaciones").value.trim(),
-    foto: fotoActual
+    fotos: Array.isArray(fotoActual) ? fotoActual : (fotoActual ? [fotoActual] : []),
+foto: Array.isArray(fotoActual) ? fotoActual[0] : (fotoActual || "")
   };
 
   if (clienteActual !== null) {
