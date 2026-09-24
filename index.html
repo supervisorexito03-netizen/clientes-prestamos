@@ -236,5 +236,275 @@ function mostrarFormulario(id=null){
     document.getElementById("cuota").value = c.cuota;
     document.getElementById("fecha").value = c.fecha;
     document.getElementById("observaciones").value = c.observaciones;
+    fotoActual = c.foto || "";
 
+    if (fotoActual) {
+      document.getElementById("preview").src = fotoActual;
+      document.getElementById("preview").classList.remove("hidden");
+    }
+  } else {
+    limpiarFormulario();
+    document.getElementById("tituloFormulario").textContent = "Nuevo cliente";
+  }
+}
+
+function limpiarFormulario() {
+  document.getElementById("nombre").value = "";
+  document.getElementById("telefono").value = "";
+  document.getElementById("documento").value = "";
+  document.getElementById("direccion").value = "";
+  document.getElementById("prestamo").value = "";
+  document.getElementById("cuota").value = "";
+  document.getElementById("fecha").value = "";
+  document.getElementById("observaciones").value = "";
+  document.getElementById("foto").value = "";
+  document.getElementById("preview").src = "";
+  document.getElementById("preview").classList.add("hidden");
+  fotoActual = "";
+}
+
+function previsualizarFoto() {
+  const archivo = document.getElementById("foto").files[0];
+
+  if (!archivo) return;
+
+  const lector = new FileReader();
+
+  lector.onload = function(e) {
+    fotoActual = e.target.result;
+    document.getElementById("preview").src = fotoActual;
+    document.getElementById("preview").classList.remove("hidden");
+  };
+
+  lector.readAsDataURL(archivo);
+}
+
+function guardarCliente() {
+  const nombre = document.getElementById("nombre").value.trim();
+
+  if (!nombre) {
+    alert("Escribe el nombre del cliente.");
+    return;
+  }
+
+  const cliente = {
+    id: clienteActual !== null ? clienteActual : Date.now(),
+    nombre: nombre,
+    telefono: document.getElementById("telefono").value.trim(),
+    documento: document.getElementById("documento").value.trim(),
+    direccion: document.getElementById("direccion").value.trim(),
+    prestamo: document.getElementById("prestamo").value,
+    cuota: document.getElementById("cuota").value,
+    fecha: document.getElementById("fecha").value,
+    observaciones: document.getElementById("observaciones").value.trim(),
+    foto: fotoActual
+  };
+
+  if (clienteActual !== null) {
+    const indice = clientes.findIndex(x => x.id === clienteActual);
+
+    if (indice !== -1) {
+      clientes[indice] = cliente;
+    }
+  } else {
+    clientes.push(cliente);
+  }
+
+  guardarDatos();
+  clienteActual = null;
+  fotoActual = "";
+
+  mostrarClientes();
+  volverInicio();
+
+  alert("Cliente guardado correctamente.");
+}
+
+function mostrarClientes() {
+  const lista = document.getElementById("listaClientes");
+  const buscar = document.getElementById("buscar").value.toLowerCase().trim();
+
+  const filtrados = clientes.filter(c =>
+    (c.nombre || "").toLowerCase().includes(buscar) ||
+    (c.telefono || "").toLowerCase().includes(buscar) ||
+    (c.documento || "").toLowerCase().includes(buscar)
+  );
+
+  document.getElementById("totalClientes").textContent = clientes.length;
+
+  document.getElementById("totalPrestamos").textContent =
+    clientes.filter(c => Number(c.prestamo) > 0).length;
+
+  if (filtrados.length === 0) {
+    lista.innerHTML = `
+      <div class="empty">
+        No hay clientes registrados.
+      </div>
+    `;
+    return;
+  }
+
+  lista.innerHTML = filtrados.map(c => `
+    <div class="card">
+      <div class="client">
+        ${
+          c.foto
+          ? `<img class="avatar" src="${c.foto}">`
+          : `<div class="avatar"></div>`
+        }
+
+        <div class="client-info">
+          <strong>${escapar(c.nombre)}</strong>
+          <div class="small">
+            ${escapar(c.telefono || "Sin teléfono")}
+          </div>
+          <div class="small">
+            ${escapar(c.direccion || "Sin dirección")}
+          </div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="primary" onclick="verCliente(${c.id})">
+          👁️ Ver
+        </button>
+
+        <button class="secondary" onclick="mostrarFormulario(${c.id})">
+          ✏️ Editar
+        </button>
+      </div>
+    </div>
+  `).join("");
+}
+
+function verCliente(id) {
+  const c = clientes.find(x => x.id === id);
+
+  if (!c) return;
+
+  clienteActual = id;
+
+  document.getElementById("home").classList.add("hidden");
+  document.getElementById("formulario").classList.add("hidden");
+  document.getElementById("detalle").classList.remove("hidden");
+
+  const mapa = c.direccion
+    ? `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(c.direccion)}`
+    : "";
+
+  document.getElementById("detalleContenido").innerHTML = `
+    ${
+      c.foto
+      ? `<img src="${c.foto}" class="photo-preview">`
+      : ""
+    }
+
+    <h2>${escapar(c.nombre)}</h2>
+
+    <p><strong>📞 Teléfono:</strong><br>
+    ${escapar(c.telefono || "No registrado")}</p>
+
+    <p><strong>🪪 Documento / CPF:</strong><br>
+    ${escapar(c.documento || "No registrado")}</p>
+
+    <p><strong>🏠 Dirección:</strong><br>
+    ${escapar(c.direccion || "No registrada")}</p>
+
+    <p><strong>💰 Préstamo:</strong><br>
+    ${escapar(c.prestamo || "0")}</p>
+
+    <p><strong>💵 Cuota:</strong><br>
+    ${escapar(c.cuota || "0")}</p>
+
+    <p><strong>📅 Fecha:</strong><br>
+    ${escapar(c.fecha || "No registrada")}</p>
+
+    <p><strong>📝 Observaciones:</strong><br>
+    ${escapar(c.observaciones || "Sin observaciones")}</p>
+
+    ${
+      mapa
+      ? `
+        <div class="actions">
+          <a
+            href="${mapa}"
+            target="_blank"
+            rel="noopener"
+            style="
+              display:block;
+              width:100%;
+              text-align:center;
+              text-decoration:none;
+              background:#1565c0;
+              color:white;
+              padding:12px 15px;
+              border-radius:10px;
+              font-size:16px;
+            ">
+            🗺️ Cómo llegar con Google Maps
+          </a>
+        </div>
+      `
+      : ""
+    }
+  `;
+}
+
+function editarCliente() {
+  if (clienteActual !== null) {
+    mostrarFormulario(clienteActual);
+  }
+}
+
+function eliminarCliente() {
+  if (clienteActual === null) return;
+
+  const c = clientes.find(x => x.id === clienteActual);
+
+  if (!c) return;
+
+  if (!confirm(`¿Eliminar a ${c.nombre}?`)) {
+    return;
+  }
+
+  clientes = clientes.filter(x => x.id !== clienteActual);
+
+  guardarDatos();
+
+  clienteActual = null;
+
+  mostrarClientes();
+  volverInicio();
+}
+
+function cancelarFormulario() {
+  clienteActual = null;
+  fotoActual = "";
+  limpiarFormulario();
+  volverInicio();
+}
+
+function volverInicio() {
+  document.getElementById("formulario").classList.add("hidden");
+  document.getElementById("detalle").classList.add("hidden");
+  document.getElementById("home").classList.remove("hidden");
+
+  mostrarClientes();
+}
+
+function escapar(texto) {
+  return String(texto)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+mostrarClientes();
+
+</script>
+
+</body>
+</html>
    
