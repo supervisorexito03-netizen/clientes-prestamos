@@ -178,7 +178,7 @@ footer{
     <textarea id="observaciones" rows="3" placeholder="Notas del cliente"></textarea>
 
     <label>Foto del cliente</label>
-    <input id="foto" type="file" accept="image/*" onchange="previsualizarFoto()">
+    <input id="foto" type="file" accept="image/*" multiple onchange="previsualizarFoto()">
 
     <img id="preview" class="photo-preview hidden">
 
@@ -264,19 +264,32 @@ function limpiarFormulario() {
 }
 
 function previsualizarFoto() {
-  const archivo = document.getElementById("foto").files[0];
+  const archivos = document.getElementById("foto").files;
 
-  if (!archivo) return;
+  if (!archivos || archivos.length === 0) return;
 
-  const lector = new FileReader();
+  const lectores = [];
 
-  lector.onload = function(e) {
-    fotoActual = e.target.result;
-    document.getElementById("preview").src = fotoActual;
-    document.getElementById("preview").classList.remove("hidden");
-  };
+  for (let i = 0; i < archivos.length; i++) {
+    lectores.push(new Promise((resolve, reject) => {
+      const lector = new FileReader();
 
-  lector.readAsDataURL(archivo);
+      lector.onload = function(e) {
+        resolve(e.target.result);
+      };
+
+      lector.onerror = reject;
+      lector.readAsDataURL(archivos[i]);
+    }));
+  }
+
+  Promise.all(lectores).then(function(fotos) {
+    fotoActual = fotos;
+    
+    const preview = document.getElementById("preview");
+    preview.src = fotos[0];
+    preview.classList.remove("hidden");
+  });
 }
 
 function guardarCliente() {
