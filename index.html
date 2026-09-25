@@ -413,6 +413,7 @@ function administrarRutas(){
 function guardarDatos(){
  try{
   localStorage.setItem(KEY,JSON.stringify(clientes));
+  guardarEnNube();
   return true;
  }catch(e){
   alert("No se pudo guardar. Las fotos ocupan demasiado espacio. Prueba con menos fotos o fotos más pequeñas.");
