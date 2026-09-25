@@ -442,9 +442,6 @@ function ver(id){
  href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(c.direccion)}&travelmode=driving"
  target="_blank" rel="noopener">🗺️ Cómo llegar con Google Maps</a>`:"";
 
-const wa=tieneWhatsApp(c.telefono)?
-`<button class="whatsapp" onclick="whatsapp('${numeroWhatsApp(c.telefono)}')">💬 WhatsApp</button>`:"";
-
 $("detalleContenido").innerHTML=`
 ${galeria}
 
