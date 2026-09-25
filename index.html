@@ -1008,9 +1008,52 @@ if(e.key==="ArrowRight")siguiente();
     codigo.focus();
   },100);
 })();
+ async function cargarDesdeNube(){
+  try{
+    const respuesta=await fetch(SERVIDOR_URL);
+    const resultado=await respuesta.json();
+
+    if(!resultado.ok||!resultado.datos)return;
+
+    const datos=resultado.datos;
+
+    const nubeClientes=Array.isArray(datos.clientes)
+      ? datos.clientes
+      : [];
+
+    const nubeRutas=Array.isArray(datos.rutas)
+      ? datos.rutas
+      : [];
+
+    if(nubeClientes.length||nubeRutas.length){
+      clientes=nubeClientes.map(normalizar).filter(Boolean);
+
+      if(nubeRutas.length){
+        rutas=nubeRutas.filter(x=>String(x).trim());
+      }
+
+      localStorage.setItem(
+        KEY,
+        JSON.stringify(clientes)
+      );
+
+      localStorage.setItem(
+        RUTAS_KEY,
+        JSON.stringify(rutas)
+      );
+
+      actualizarSelectRutas();
+      listar();
+    }
+
+  }catch(e){
+    console.error("No se pudo cargar desde la nube:",e);
+  }
+ }
 cargarRutas();
  cargar();
 listar();
+ cargarDesdeNube();
 
 </script>
 
