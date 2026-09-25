@@ -33,29 +33,22 @@ main{padding:15px;max-width:700px;margin:auto}
   margin-bottom:15px;
   box-shadow:0 2px 8px #0001;
 }
-button, .btn-link{
+button{
   border:0;
   border-radius:10px;
   padding:12px 15px;
   font-size:16px;
   cursor:pointer;
-  display:inline-block;
-  text-align:center;
-  text-decoration:none;
 }
 .primary{background:#1565c0;color:white}
 .danger{background:#d32f2f;color:white}
 .secondary{background:#e9eef5;color:#17202a}
-.whatsapp{background:#25d366;color:white;font-weight:bold}
-input,textarea,select{
-  width:100%;
-  padding:13px;
-  border:1px solid #ccd3da;
-  border-radius:10px;
-  margin:6px 0 12px;
-  font-size:16px;
+.whatsapp{background:#25D366;color:white}
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
 }
-label{font-weight:bold;font-size:14px}
 .stats{
   display:grid;
   grid-template-columns:1fr 1fr;
@@ -72,59 +65,201 @@ label{font-weight:bold;font-size:14px}
   gap:12px;
   align-items:center;
 }
+.client-photos{
+  display:flex;
+  gap:5px;
+  flex-wrap:wrap;
+  width:125px;
+  flex-shrink:0;
+}
 .avatar{
   width:58px;
   height:58px;
-  border-radius:50%;
+  border-radius:12px;
   object-fit:cover;
   background:#dbe8f8;
+  cursor:pointer;
 }
 .client-info{flex:1}
 .client-info strong{display:block;font-size:18px}
 .small{font-size:13px;color:#68737d}
-.actions{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
-.photo-container{
-  position:relative;
-  width:100%;
-  background:#000;
-  border-radius:12px;
-  overflow:hidden;
-  margin:8px 0;
+.route-badge{
+  display:inline-block;
+  background:#e3f2fd;
+  color:#1565c0;
+  border-radius:999px;
+  padding:5px 9px;
+  font-size:12px;
+  font-weight:bold;
+  margin-top:5px;
+}
+.route-filters{
+  display:flex;
+  gap:7px;
+  overflow-x:auto;
+  padding:2px 0 12px;
+}
+.route-filters button{
+  white-space:nowrap;
+  padding:9px 12px;
+  font-size:14px;
+  background:#e9eef5;
+}
+.route-filters button.active{
+  background:#1565c0;
+  color:white;
 }
 .photo-preview{
   width:100%;
-  max-height:350px;
-  object-fit:contain;
+  max-height:250px;
+  object-fit:cover;
+  border-radius:12px;
+  margin:8px 0;
+}
+.preview-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:8px;
+  margin:8px 0;
+}
+.preview-item{
+  position:relative;
+}
+.preview-item img{
+  width:100%;
+  height:100px;
+  object-fit:cover;
+  border-radius:10px;
   display:block;
+  cursor:pointer;
 }
-.gallery-nav{
-  display:flex;
-  justify-content:space-between;
-  background:rgba(0,0,0,0.6);
-  padding:8px;
+.remove-photo{
+  position:absolute;
+  top:4px;
+  right:4px;
+  width:30px;
+  height:30px;
+  padding:0;
+  border-radius:50%;
+  background:#d32f2f;
   color:white;
-  align-items:center;
-}
-.gallery-nav button{
-  padding:5px 12px;
-  font-size:14px;
-  background:white;
-  color:black;
+  font-size:18px;
 }
 .hidden{display:none}
-.search, .filter-select{
-  margin-bottom:15px;
-}
+.search{margin-bottom:10px}
 .empty{
   text-align:center;
   padding:30px 10px;
   color:#69757d;
 }
+.actions{
+  display:flex;
+  gap:8px;
+  margin-top:12px;
+  flex-wrap:wrap;
+}
+.actions button,.actions a{flex:1;min-width:140px}
+.detail-gallery{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:10px;
+  margin-bottom:18px;
+}
+.detail-gallery img{
+  width:100%;
+  height:180px;
+  object-fit:cover;
+  border-radius:12px;
+  cursor:pointer;
+}
+.no-photo{
+  background:#eef2f5;
+  border-radius:12px;
+  padding:30px 10px;
+  text-align:center;
+  color:#69757d;
+  margin-bottom:18px;
+}
+.gallery-modal{
+  position:fixed;
+  inset:0;
+  background:#000e;
+  z-index:1000;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:15px;
+}
+.gallery-modal.hidden{display:none}
+.gallery-content{
+  width:100%;
+  max-width:700px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:12px;
+}
+.gallery-image{
+  max-width:100%;
+  max-height:75vh;
+  object-fit:contain;
+  border-radius:10px;
+}
+.gallery-top{
+  width:100%;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  color:white;
+}
+.gallery-counter{
+  font-size:16px;
+  font-weight:bold;
+}
+.gallery-close{
+  background:white;
+  color:#17202a;
+  width:44px;
+  height:44px;
+  padding:0;
+  border-radius:50%;
+  font-size:25px;
+}
+.gallery-controls{
+  display:flex;
+  gap:15px;
+}
+.gallery-controls button{
+  background:white;
+  color:#17202a;
+  min-width:120px;
+}
+label{
+  display:block;
+  margin-top:12px;
+  margin-bottom:5px;
+  font-weight:bold;
+}
+input,select,textarea{
+  width:100%;
+  padding:12px;
+  border:1px solid #ccd3da;
+  border-radius:10px;
+  font-size:16px;
+  background:white;
+}
+textarea{resize:vertical}
 footer{
   text-align:center;
   color:#7b858d;
   font-size:12px;
   padding:20px;
+}
+@media(max-width:430px){
+  .client-photos{width:80px}
+  .client-photos .avatar{width:38px;height:38px}
+  .detail-gallery img{height:150px}
+  .preview-grid{grid-template-columns:repeat(2,1fr)}
 }
 </style>
 </head>
@@ -145,6 +280,7 @@ footer{
       <span>Clientes</span>
       <strong id="totalClientes">0</strong>
     </div>
+
     <div class="stat">
       <span>Préstamos</span>
       <strong id="totalPrestamos">0</strong>
@@ -157,22 +293,14 @@ footer{
     </button>
   </div>
 
-  <label>Filtrar por Ruta</label>
-  <select id="filtroRuta" class="filter-select" onchange="mostrarClientes()">
-    <option value="Todas">Todas las rutas</option>
-    <option value="Ruta Centro">Ruta Centro</option>
-    <option value="Ruta Norte">Ruta Norte</option>
-    <option value="Ruta Sur">Ruta Sur</option>
-    <option value="Ruta Este">Ruta Este</option>
-    <option value="Ruta Oeste">Ruta Oeste</option>
-  </select>
-
   <input
     class="search"
     id="buscar"
-    placeholder="🔎 Buscar cliente por nombre, tel o doc..."
+    placeholder="🔎 Buscar por nombre, teléfono, documento o dirección..."
     oninput="mostrarClientes()"
   >
+
+  <div id="filtrosRuta" class="route-filters"></div>
 
   <div id="listaClientes"></div>
 
@@ -181,28 +309,30 @@ footer{
 <section id="formulario" class="hidden">
 
   <div class="card">
+
     <h2 id="tituloFormulario">Nuevo cliente</h2>
 
     <label>Nombre completo</label>
     <input id="nombre" type="text" placeholder="Nombre del cliente">
 
-    <label>Ruta asignada</label>
-    <select id="ruta">
-      <option value="Ruta Centro">Ruta Centro</option>
-      <option value="Ruta Norte">Ruta Norte</option>
-      <option value="Ruta Sur">Ruta Sur</option>
-      <option value="Ruta Este">Ruta Este</option>
-      <option value="Ruta Oeste">Ruta Oeste</option>
-    </select>
-
     <label>Teléfono</label>
-    <input id="telefono" type="tel" placeholder="Teléfono">
+    <input id="telefono" type="tel" placeholder="Ej: 51999999999">
 
     <label>Documento / CPF</label>
     <input id="documento" type="text" placeholder="Documento">
 
     <label>Dirección</label>
-    <input id="direccion" type="text" placeholder="Dirección">
+    <input id="direccion" type="text" placeholder="Dirección completa">
+
+    <label>Ruta</label>
+    <select id="ruta">
+      <option value="Ruta 1">Ruta 1</option>
+      <option value="Ruta 2">Ruta 2</option>
+      <option value="Ruta 3">Ruta 3</option>
+      <option value="Ruta 4">Ruta 4</option>
+      <option value="Ruta 5">Ruta 5</option>
+      <option value="Sin ruta">Sin ruta</option>
+    </select>
 
     <label>Valor del préstamo</label>
     <input id="prestamo" type="number" step="0.01" placeholder="0.00">
@@ -216,163 +346,9 @@ footer{
     <label>Observaciones</label>
     <textarea id="observaciones" rows="3" placeholder="Notas del cliente"></textarea>
 
-    <label>Subir fotos (Puedes seleccionar varias)</label>
-    <input id="foto" type="file" accept="image/*" multiple onchange="previsualizarFotos()">
+    <label>Fotos del cliente</label>
 
-    <div id="wrapperPreview" class="photo-container hidden">
-      <img id="preview" class="photo-preview">
-      <div id="navPreview" class="gallery-nav hidden">
-        <button type="button" onclick="cambiarFotoPreview(-1)">◀ Ant.</button>
-        <span id="infoPreview">1 de 1</span>
-        <button type="button" onclick="cambiarFotoPreview(1)">Sig. ▶</button>
-      </div>
-    </div>
-
-    <div class="actions">
-      <button class="primary" onclick="guardarCliente()">💾 Guardar</button>
-      <button class="secondary" onclick="cancelarFormulario()">Cancelar</button>
-    </div>
-  </div>
-
-</section>
-
-<section id="detalle" class="hidden">
-  <div class="card">
-    <div id="detalleContenido"></div>
-
-    <div class="actions">
-      <button class="primary" onclick="editarCliente()">✏️ Editar</button>
-      <button class="danger" onclick="eliminarCliente()">🗑️ Eliminar</button>
-      <button class="secondary" onclick="volverInicio()">← Volver</button>
-    </div>
-  </div>
-</section>
-
-<footer>
-  Clientes Préstamos
-</footer>
-
-</main>
-
-<script>
-let clientes = JSON.parse(localStorage.getItem("clientesPrestamos") || "[]");
-let clienteActual = null;
-let fotosTemporales = [];
-let indicePreviewActual = 0;
-let indiceDetalleActual = 0;
-
-function guardarDatos(){
-  localStorage.setItem("clientesPrestamos", JSON.stringify(clientes));
-}
-
-function mostrarFormulario(id=null){
-  document.getElementById("home").classList.add("hidden");
-  document.getElementById("detalle").classList.add("hidden");
-  document.getElementById("formulario").classList.remove("hidden");
-
-  clienteActual = id;
-  fotosTemporales = [];
-  indicePreviewActual = 0;
-
-  if(id !== null){
-    const c = clientes.find(x => x.id === id);
-
-    document.getElementById("tituloFormulario").textContent = "Editar cliente";
-    document.getElementById("nombre").value = c.nombre;
-    document.getElementById("ruta").value = c.ruta || "Ruta Centro";
-    document.getElementById("telefono").value = c.telefono;
-    document.getElementById("documento").value = c.documento;
-    document.getElementById("direccion").value = c.direccion;
-    document.getElementById("prestamo").value = c.prestamo;
-    document.getElementById("cuota").value = c.cuota;
-    document.getElementById("fecha").value = c.fecha;
-    document.getElementById("observaciones").value = c.observaciones;
-    
-    if (c.fotos && c.fotos.length > 0) {
-      fotosTemporales = [...c.fotos];
-    } else if (c.foto) {
-      fotosTemporales = [c.foto];
-    }
-
-    actualizarVisorPreview();
-  } else {
-    limpiarFormulario();
-    document.getElementById("tituloFormulario").textContent = "Nuevo cliente";
-  }
-}
-
-function limpiarFormulario() {
-  document.getElementById("nombre").value = "";
-  document.getElementById("ruta").selectedIndex = 0;
-  document.getElementById("telefono").value = "";
-  document.getElementById("documento").value = "";
-  document.getElementById("direccion").value = "";
-  document.getElementById("prestamo").value = "";
-  document.getElementById("cuota").value = "";
-  document.getElementById("fecha").value = "";
-  document.getElementById("observaciones").value = "";
-  document.getElementById("foto").value = "";
-  fotosTemporales = [];
-  indicePreviewActual = 0;
-  actualizarVisorPreview();
-}
-
-function previsualizarFotos() {
-  const archivos = document.getElementById("foto").files;
-  if (!archivos || archivos.length === 0) return;
-
-  const lectores = [];
-  for (let i = 0; i < archivos.length; i++) {
-    lectores.push(new Promise((resolve, reject) => {
-      const lector = new FileReader();
-      lector.onload = e => resolve(e.target.result);
-      lector.onerror = reject;
-      lector.readAsDataURL(archivos[i]);
-    }));
-  }
-
-  Promise.all(lectores).then(fotosBase64 => {
-    fotosTemporales = fotosBase64;
-    indicePreviewActual = 0;
-    actualizarVisorPreview();
-  });
-}
-
-function actualizarVisorPreview() {
-  const wrapper = document.getElementById("wrapperPreview");
-  const img = document.getElementById("preview");
-  const nav = document.getElementById("navPreview");
-  const info = document.getElementById("infoPreview");
-
-  if (fotosTemporales.length > 0) {
-    wrapper.classList.remove("hidden");
-    img.src = fotosTemporales[indicePreviewActual];
-    
-    if (fotosTemporales.length > 1) {
-      nav.classList.remove("hidden");
-      info.textContent = `${indicePreviewActual + 1} de ${fotosTemporales.length}`;
-    } else {
-      nav.classList.add("hidden");
-    }
-  } else {
-    wrapper.classList.add("hidden");
-    img.src = "";
-    nav.classList.add("hidden");
-  }
-}
-
-function cambiarFotoPreview(direccion) {
-  indicePreviewActual += direccion;
-  if (indicePreviewActual < 0) indicePreviewActual = fotosTemporales.length - 1;
-  if (indicePreviewActual >= fotosTemporales.length) indicePreviewActual = 0;
-  actualizarVisorPreview();
-}
-
-function guardarCliente() {
-  const nombre = document.getElementById("nombre").value.trim();
-
-  if (!nombre) {$ ${escapar(c.cuota || "0")}📅 Fecha:${escapar(c.fecha || "No registrada")}📝 Observaciones:${escapar(c.observaciones || "Sin observaciones")}`;}function cambiarFotoDetalle(direccion) {const c = clientes.find(x => x.id === clienteActual);if (!c) return;const listaFotos = c.fotos && c.fotos.length > 0 ? c.fotos : (c.foto ? [c.foto] : []);indiceDetalleActual += direccion;if (indiceDetalleActual < 0) indiceDetalleActual = listaFotos.length - 1;if (indiceDetalleActual >= listaFotos.length) indiceDetalleActual = 0;document.getElementById("imgDetalle").src = listaFotos[indiceDetalleActual];document.getElementById("infoDetalle").textContent = ${indiceDetalleActual + 1} de ${listaFotos.length};}function editarCliente() {if (clienteActual !== null) {mostrarFormulario(clienteActual);}}function eliminarCliente() {if (clienteActual === null) return;const c = clientes.find(x => x.id === clienteActual);if (!c || !confirm(¿Eliminar a ${c.nombre}?)) return;clientes = clientes.filter(x => x.id !== clienteActual);guardarDatos();clienteActual = null;mostrarClientes();volverInicio();}function cancelarFormulario() {clienteActual = null;fotosTemporales = [];limpiarFormulario();volverInicio();}function volverInicio() {document.getElementById("formulario").classList.add("hidden");document.getElementById("detalle").classList.add("hidden");document.getElementById("home").classList.remove("hidden");mostrarClientes();}function escapar(texto) {return String(texto || "").replace(/&/g, "&").replace(/</g, "<").replace(/>/g, ">").replace(/"/g, """).replace(/'/g, "'");}mostrarClientes();
-<FollowUp>$ ${escapar(c.cuota || "0")}📅 Fecha:${escapar(c.fecha || "No registrada")}📝 Observaciones:${escapar(c.observaciones || "Sin observaciones")}`;}function cambiarFotoDetalle(direccion) {const c = clientes.find(x => x.id === clienteActual);if (!c) return;const listaFotos = c.fotos && c.fotos.length > 0 ? c.fotos : (c.foto ? [c.foto] : []);indiceDetalleActual += direccion;if (indiceDetalleActual < 0) indiceDetalleActual = listaFotos.length - 1;if (indiceDetalleActual >= listaFotos.length) indiceDetalleActual = 0;document.getElementById("imgDetalle").src = listaFotos[indiceDetalleActual];document.getElementById("infoDetalle").textContent = ${indiceDetalleActual + 1} de ${listaFotos.length};}function editarCliente() {if (clienteActual !== null) {mostrarFormulario(clienteActual);}}function eliminarCliente() {if (clienteActual === null) return;const c = clientes.find(x => x.id === clienteActual);if (!c || !confirm(¿Eliminar a ${c.nombre}?)) return;clientes = clientes.filter(x => x.id !== clienteActual);guardarDatos();clienteActual = null;mostrarClientes();volverInicio();}function cancelarFormulario() {clienteActual = null;fotosTemporales = [];limpiarFormulario();volverInicio();}function volverInicio() {document.getElementById("formulario").classList.add("hidden");document.getElementById("detalle").classList.add("hidden");document.getElementById("home").classList.remove("hidden");mostrarClientes();}function escapar(texto) {return String(texto || "").replace(/&/g, "&").replace(/</g, "<").replace(/>/g, ">").replace(/"/g, """).replace(/'/g, "'");}mostrarClientes();
-<FollowUp>
-  $ ${escapar(c.cuota || "0")}📅 Fecha:${escapar(c.fecha || "No registrada")}📝 Observaciones:${escapar(c.observaciones || "Sin observaciones")}`;}function cambiarFotoDetalle(direccion) {const c = clientes.find(x => x.id === clienteActual);if (!c) return;const listaFotos = c.fotos && c.fotos.length > 0 ? c.fotos : (c.foto ? [c.foto] : []);indiceDetalleActual += direccion;if (indiceDetalleActual < 0) indiceDetalleActual = listaFotos.length - 1;if (indiceDetalleActual >= listaFotos.length) indiceDetalleActual = 0;document.getElementById("imgDetalle").src = listaFotos[indiceDetalleActual];document.getElementById("infoDetalle").textContent = ${indiceDetalleActual + 1} de ${listaFotos.length};}function editarCliente() {if (clienteActual !== null) {mostrarFormulario(clienteActual);}}function eliminarCliente() {if (clienteActual === null) return;const c = clientes.find(x => x.id === clienteActual);if (!c || !confirm(¿Eliminar a ${c.nombre}?)) return;clientes = clientes.filter(x => x.id !== clienteActual);guardarDatos();clienteActual = null;mostrarClientes();volverInicio();}function cancelarFormulario() {clienteActual = null;fotosTemporales = [];limpiarFormulario();volverInicio();}function volverInicio() {document.getElementById("formulario").classList.add("hidden");document.getElementById("detalle").classList.add("hidden");document.getElementById("home").classList.remove("hidden");mostrarClientes();}function escapar(texto) {return String(texto || "").replace(/&/g, "&").replace(/</g, "<").replace(/>/g, ">").replace(/"/g, """).replace(/'/g, "'");}mostrarClientes();
-<FollowUp>
+    <input
+      id="foto"
+      type="file"
+      accept
