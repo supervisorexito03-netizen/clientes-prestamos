@@ -2,386 +2,62 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#1565c0">
 <title>Clientes Préstamos</title>
-
 <style>
-*{
-  box-sizing:border-box;
-}
-
-body{
-  margin:0;
-  font-family:Arial,sans-serif;
-  background:#f4f6f8;
-  color:#17202a;
-}
-
-header{
-  background:#1565c0;
-  color:white;
-  padding:20px 16px;
-  position:sticky;
-  top:0;
-  z-index:10;
-}
-
-header h1{
-  margin:0;
-  font-size:25px;
-}
-
-header p{
-  margin:5px 0 0;
-  opacity:.9;
-}
-
-main{
-  padding:15px;
-  max-width:700px;
-  margin:auto;
-}
-
-.card{
-  background:white;
-  border-radius:16px;
-  padding:16px;
-  margin-bottom:15px;
-  box-shadow:0 2px 8px #0001;
-}
-
-button{
-  border:0;
-  border-radius:10px;
-  padding:12px 15px;
-  font-size:16px;
-  cursor:pointer;
-}
-
-.primary{
-  background:#1565c0;
-  color:white;
-}
-
-.danger{
-  background:#d32f2f;
-  color:white;
-}
-
-.secondary{
-  background:#e9eef5;
-  color:#17202a;
-}
-
-.whatsapp{
-  background:#25D366;
-  color:white;
-}
-
-.stats{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
-  margin-bottom:15px;
-}
-
-.stat{
-  padding:15px;
-  border-radius:14px;
-  background:#eef5ff;
-}
-
-.stat strong{
-  display:block;
-  font-size:24px;
-  margin-top:4px;
-}
-
-.client{
-  display:flex;
-  gap:12px;
-  align-items:center;
-}
-
-.client-photos{
-  display:flex;
-  gap:5px;
-  flex-wrap:wrap;
-  width:125px;
-  flex-shrink:0;
-}
-
-.avatar{
-  width:58px;
-  height:58px;
-  border-radius:12px;
-  object-fit:cover;
-  background:#dbe8f8;
-  cursor:pointer;
-}
-
-.client-info{
-  flex:1;
-  min-width:0;
-}
-
-.client-info strong{
-  display:block;
-  font-size:18px;
-  margin-bottom:4px;
-}
-
-.small{
-  font-size:13px;
-  color:#68737d;
-  margin-top:3px;
-  word-break:break-word;
-}
-
-.route-badge{
-  display:inline-block;
-  background:#e3f2fd;
-  color:#1565c0;
-  border-radius:999px;
-  padding:5px 9px;
-  font-size:12px;
-  font-weight:bold;
-  margin-top:6px;
-}
-
-.route-filters{
-  display:flex;
-  gap:7px;
-  overflow-x:auto;
-  padding:2px 0 12px;
-}
-
-.route-filters button{
-  white-space:nowrap;
-  padding:9px 12px;
-  font-size:14px;
-  background:#e9eef5;
-}
-
-.route-filters button.active{
-  background:#1565c0;
-  color:white;
-}
-
-.search{
-  margin-bottom:10px;
-}
-
-input,
-select,
-textarea{
-  width:100%;
-  padding:12px;
-  border:1px solid #ccd3da;
-  border-radius:10px;
-  font-size:16px;
-  background:white;
-}
-
-textarea{
-  resize:vertical;
-}
-
-label{
-  display:block;
-  margin-top:12px;
-  margin-bottom:5px;
-  font-weight:bold;
-}
-
-.photo-preview{
-  width:100%;
-  max-height:250px;
-  object-fit:cover;
-  border-radius:12px;
-  margin:8px 0;
-}
-
-.preview-grid{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:8px;
-  margin:10px 0;
-}
-
-.preview-item{
-  position:relative;
-}
-
-.preview-item img{
-  width:100%;
-  height:100px;
-  object-fit:cover;
-  border-radius:10px;
-  display:block;
-  cursor:pointer;
-}
-
-.remove-photo{
-  position:absolute;
-  top:4px;
-  right:4px;
-  width:30px;
-  height:30px;
-  padding:0;
-  border-radius:50%;
-  background:#d32f2f;
-  color:white;
-  font-size:18px;
-}
-
-.hidden{
-  display:none !important;
-}
-
-.empty{
-  text-align:center;
-  padding:30px 10px;
-  color:#69757d;
-}
-
-.actions{
-  display:flex;
-  gap:8px;
-  margin-top:12px;
-  flex-wrap:wrap;
-}
-
-.actions button,
-.actions a{
-  flex:1;
-  min-width:140px;
-}
-
-.detail-gallery{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:10px;
-  margin-bottom:18px;
-}
-
-.detail-gallery img{
-  width:100%;
-  height:180px;
-  object-fit:cover;
-  border-radius:12px;
-  cursor:pointer;
-}
-
-.no-photo{
-  background:#eef2f5;
-  border-radius:12px;
-  padding:30px 10px;
-  text-align:center;
-  color:#69757d;
-  margin-bottom:18px;
-}
-
-.gallery-modal{
-  position:fixed;
-  inset:0;
-  background:#000e;
-  z-index:1000;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:15px;
-}
-
-.gallery-content{
-  width:100%;
-  max-width:700px;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:12px;
-}
-
-.gallery-image{
-  max-width:100%;
-  max-height:75vh;
-  object-fit:contain;
-  border-radius:10px;
-}
-
-.gallery-top{
-  width:100%;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  color:white;
-}
-
-.gallery-counter{
-  font-size:16px;
-  font-weight:bold;
-}
-
-.gallery-close{
-  background:white;
-  color:#17202a;
-  width:44px;
-  height:44px;
-  padding:0;
-  border-radius:50%;
-  font-size:25px;
-}
-
-.gallery-controls{
-  display:flex;
-  gap:15px;
-}
-
-.gallery-controls button{
-  background:white;
-  color:#17202a;
-  min-width:120px;
-}
-
-.error-box{
-  background:#ffebee;
-  color:#b71c1c;
-  padding:15px;
-  border-radius:12px;
-  margin-bottom:15px;
-  font-size:14px;
-}
-
-footer{
-  text-align:center;
-  color:#7b858d;
-  font-size:12px;
-  padding:20px;
-}
-
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#f4f6f8;color:#222}
+header{background:#1565c0;color:white;padding:18px;position:sticky;top:0;z-index:10}
+header h1{margin:0;font-size:23px}
+header p{margin:5px 0 0}
+main{max-width:700px;margin:auto;padding:14px}
+.card{background:white;border-radius:14px;padding:15px;margin-bottom:12px;box-shadow:0 2px 7px #0002}
+button{border:0;border-radius:9px;padding:11px 14px;font-size:15px;cursor:pointer}
+.primary{background:#1565c0;color:white}
+.secondary{background:#e8edf2;color:#222}
+.danger{background:#d32f2f;color:white}
+.whatsapp{background:#25d366;color:white}
+.hidden{display:none!important}
+input,select,textarea{width:100%;padding:12px;border:1px solid #ccd2d8;border-radius:9px;font-size:16px;background:white}
+label{display:block;font-weight:bold;margin:12px 0 5px}
+textarea{resize:vertical}
+.search{margin-bottom:10px}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.stat{background:#e8f2ff;border-radius:12px;padding:13px}
+.stat b{display:block;font-size:25px;margin-top:4px}
+.routes{display:flex;gap:6px;overflow-x:auto;margin-bottom:12px;padding-bottom:3px}
+.routes button{background:#e6ebf0;white-space:nowrap;padding:8px 11px;font-size:13px}
+.routes .active{background:#1565c0;color:white}
+.client{display:flex;gap:12px;align-items:center}
+.photos-small{width:105px;display:flex;gap:5px;flex-wrap:wrap}
+.avatar{width:48px;height:48px;border-radius:9px;object-fit:cover;background:#ddd;cursor:pointer}
+.info{flex:1;min-width:0}
+.info b{font-size:18px}
+.small{font-size:13px;color:#69747c;margin-top:4px;word-break:break-word}
+.badge{display:inline-block;background:#e3f2fd;color:#1565c0;padding:4px 8px;border-radius:20px;font-size:12px;margin-top:6px}
+.actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}
+.actions button{flex:1;min-width:110px}
+.preview{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:10px}
+.preview div{position:relative}
+.preview img{width:100%;height:105px;object-fit:cover;border-radius:9px;cursor:pointer}
+.remove{position:absolute;right:3px;top:3px;width:27px;height:27px;padding:0;border-radius:50%;background:#d32f2f;color:white;font-size:18px}
+.gallery{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:15px}
+.gallery img{width:100%;height:180px;object-fit:cover;border-radius:10px;cursor:pointer}
+.empty{text-align:center;padding:30px;color:#777}
+.error{background:#ffebee;color:#b71c1c;padding:12px;border-radius:9px;margin-bottom:12px}
+#modal{position:fixed;inset:0;background:#000d;z-index:100;display:flex;align-items:center;justify-content:center;padding:12px}
+.modalbox{width:100%;max-width:700px;text-align:center}
+.modalhead{display:flex;justify-content:space-between;align-items:center;color:white;margin-bottom:10px}
+.modalimg{max-width:100%;max-height:72vh;border-radius:10px;object-fit:contain}
+.modalbuttons{display:flex;justify-content:center;gap:10px;margin-top:10px}
+.modalbuttons button{background:white;color:#222}
+.close{width:42px;height:42px;border-radius:50%;font-size:25px;padding:0}
+footer{text-align:center;color:#777;font-size:12px;padding:18px}
 @media(max-width:430px){
-
-  .client-photos{
-    width:80px;
-  }
-
-  .client-photos .avatar{
-    width:38px;
-    height:38px;
-  }
-
-  .detail-gallery img{
-    height:150px;
-  }
-
-  .preview-grid{
-    grid-template-columns:repeat(2,1fr);
-  }
-
-  .gallery-controls button{
-    min-width:105px;
-  }
+.photos-small{width:80px}.avatar{width:37px;height:37px}
+.preview{grid-template-columns:repeat(2,1fr)}
+.gallery img{height:150px}
 }
 </style>
 </head>
@@ -389,214 +65,524 @@ footer{
 <body>
 
 <header>
-  <h1>📋 Clientes Préstamos</h1>
-  <p>Control de clientes y préstamos</p>
+<h1>📋 Clientes Préstamos</h1>
+<p>Control de clientes y préstamos</p>
 </header>
 
 <main>
 
-<div id="mensajeError" class="error-box hidden"></div>
+<div id="error" class="error hidden"></div>
 
-<section id="home">
+<section id="inicio">
 
-  <div class="stats">
+<div class="stats">
+<div class="stat">Clientes<b id="total">0</b></div>
+<div class="stat">Préstamos<b id="prestamosTotal">0</b></div>
+</div>
 
-    <div class="stat">
-      <span>Clientes</span>
-      <strong id="totalClientes">0</strong>
-    </div>
+<div class="card">
+<button class="primary" style="width:100%" onclick="nuevo()">➕ Nuevo cliente</button>
+</div>
 
-    <div class="stat">
-      <span>Préstamos</span>
-      <strong id="totalPrestamos">0</strong>
-    </div>
+<input id="buscar" class="search" type="search"
+placeholder="🔎 Buscar nombre, teléfono, documento o dirección..."
+oninput="listar()">
 
-  </div>
-
-  <div class="card">
-
-    <button
-      type="button"
-      class="primary"
-      style="width:100%"
-      onclick="mostrarFormulario()"
-    >
-      ➕ Nuevo cliente
-    </button>
-
-  </div>
-
-  <input
-    class="search"
-    id="buscar"
-    type="search"
-    placeholder="🔎 Buscar por nombre, teléfono, documento o dirección..."
-    oninput="mostrarClientes()"
-  >
-
-  <div
-    id="filtrosRuta"
-    class="route-filters"
-  ></div>
-
-  <div id="listaClientes"></div>
+<div id="rutas" class="routes"></div>
+<div id="lista"></div>
 
 </section>
 
+<section id="form" class="hidden">
+<div class="card">
 
-<section id="formulario" class="hidden">
+<h2 id="formTitulo">Nuevo cliente</h2>
 
+<label>Nombre completo</label>
+<input id="nombre" type="text" placeholder="Nombre del cliente">
+
+<label>Teléfono</label>
+<input id="telefono" type="tel" placeholder="Ej: 999999999">
+
+<label>Documento / CPF</label>
+<input id="documento" type="text" placeholder="Documento">
+
+<label>Dirección</label>
+<input id="direccion" type="text" placeholder="Dirección completa">
+
+<label>Ruta</label>
+<select id="ruta">
+<option>Ruta 1</option>
+<option>Ruta 2</option>
+<option>Ruta 3</option>
+<option>Ruta 4</option>
+<option>Ruta 5</option>
+<option>Sin ruta</option>
+</select>
+
+<label>Valor del préstamo</label>
+<input id="prestamo" type="number" step="0.01" placeholder="0.00">
+
+<label>Cuota</label>
+<input id="cuota" type="number" step="0.01" placeholder="0.00">
+
+<label>Fecha</label>
+<input id="fecha" type="date">
+
+<label>Observaciones</label>
+<textarea id="observaciones" rows="3" placeholder="Notas del cliente"></textarea>
+
+<label>Fotos del cliente</label>
+<input id="foto" type="file" accept="image/*" multiple onchange="cargarFotos()">
+
+<div id="preview" class="preview"></div>
+
+<div class="actions">
+<button class="primary" onclick="guardar()">💾 Guardar</button>
+<button class="secondary" onclick="inicio()">Cancelar</button>
+</div>
+
+</div>
+</section>
+
+<section id="detalle" class="hidden">
+<div class="card">
+<div id="detalleContenido"></div>
+
+<div class="actions">
+<button class="primary" onclick="editar()">✏️ Editar</button>
+<button class="danger" onclick="eliminar()">🗑️ Eliminar</button>
+<button class="secondary" onclick="inicio()">← Volver</button>
+</div>
+
+</div>
+</section>
+
+<footer>Clientes Préstamos</footer>
+
+</main>
+
+<div id="modal" class="hidden" onclick="cerrarModal(event)">
+<div class="modalbox" onclick="event.stopPropagation()">
+
+<div class="modalhead">
+<span id="contador"></span>
+<button class="close" onclick="cerrarModal()">×</button>
+</div>
+
+<img id="imagenGrande" class="modalimg" src="" alt="Foto">
+
+<div class="modalbuttons">
+<button onclick="anterior()">◀ Anterior</button>
+<button onclick="siguiente()">Siguiente ▶</button>
+</div>
+
+</div>
+</div>
+
+<script>
+"use strict";
+
+const KEY="clientesPrestamos";
+
+let clientes=[];
+let actual=null;
+let fotos=[];
+let rutaFiltro="Todas";
+let fotosGaleria=[];
+let indice=0;
+
+function $(id){
+ return document.getElementById(id);
+}
+
+function escapar(v){
+ return String(v??"")
+ .replace(/&/g,"&amp;")
+ .replace(/</g,"&lt;")
+ .replace(/>/g,"&gt;")
+ .replace(/"/g,"&quot;")
+ .replace(/'/g,"&#039;");
+}
+
+function normalizar(c){
+ if(!c||typeof c!=="object")return null;
+ if(!Array.isArray(c.fotos))c.fotos=c.foto?[c.foto]:[];
+ if(!c.foto&&c.fotos.length)c.foto=c.fotos[0];
+ if(!c.ruta)c.ruta="Sin ruta";
+ return c;
+}
+
+function cargar(){
+ try{
+  const r=localStorage.getItem(KEY);
+  clientes=r?JSON.parse(r):[];
+  if(!Array.isArray(clientes))clientes=[];
+  clientes=clientes.map(normalizar).filter(Boolean);
+ }catch(e){
+  console.error(e);
+  clientes=[];
+  $("error").textContent="No se pudieron leer los datos guardados.";
+  $("error").classList.remove("hidden");
+ }
+}
+
+function guardarDatos(){
+ try{
+  localStorage.setItem(KEY,JSON.stringify(clientes));
+  return true;
+ }catch(e){
+  alert("No se pudo guardar. Las fotos ocupan demasiado espacio. Prueba con menos fotos o fotos más pequeñas.");
+  return false;
+ }
+}
+
+function ocultar(){
+ $("inicio").classList.add("hidden");
+ $("form").classList.add("hidden");
+ $("detalle").classList.add("hidden");
+}
+
+function inicio(){
+ actual=null;
+ fotos=[];
+ ocultar();
+ $("inicio").classList.remove("hidden");
+ listar();
+}
+
+function nuevo(){
+ actual=null;
+ fotos=[];
+ limpiar();
+ ocultar();
+ $("form").classList.remove("hidden");
+ $("formTitulo").textContent="Nuevo cliente";
+ if(rutaFiltro!=="Todas")$("ruta").value=rutaFiltro;
+}
+
+function limpiar(){
+ ["nombre","telefono","documento","direccion","prestamo","cuota","fecha","observaciones"].forEach(id=>$(id).value="");
+ $("ruta").value="Ruta 1";
+ $("foto").value="";
+ $("preview").innerHTML="";
+}
+
+function editarCliente(id){
+ const c=clientes.find(x=>String(x.id)===String(id));
+ if(!c)return;
+ normalizar(c);
+ actual=c.id;
+ ocultar();
+ $("form").classList.remove("hidden");
+ $("formTitulo").textContent="Editar cliente";
+ $("nombre").value=c.nombre||"";
+ $("telefono").value=c.telefono||"";
+ $("documento").value=c.documento||"";
+ $("direccion").value=c.direccion||"";
+ $("ruta").value=c.ruta||"Sin ruta";
+ $("prestamo").value=c.prestamo||"";
+ $("cuota").value=c.cuota||"";
+ $("fecha").value=c.fecha||"";
+ $("observaciones").value=c.observaciones||"";
+ fotos=[...(c.fotos||[])];
+ $("foto").value="";
+ mostrarPreview();
+}
+
+function cargarFotos(){
+ const archivos=[...$("foto").files];
+ if(!archivos.length)return;
+
+ Promise.all(archivos.map(a=>new Promise((resolve,reject)=>{
+  const r=new FileReader();
+  r.onload=e=>resolve(e.target.result);
+  r.onerror=reject;
+  r.readAsDataURL(a);
+ }))).then(nuevas=>{
+  fotos=fotos.concat(nuevas);
+  mostrarPreview();
+  $("foto").value="";
+ }).catch(()=>alert("No se pudo cargar una foto."));
+}
+
+function mostrarPreview(){
+ $("preview").innerHTML=fotos.map((f,i)=>`
+ <div>
+ <img src="${f}" onclick="abrirGaleria(fotos,${i})">
+ <button class="remove" onclick="quitarFoto(${i})">×</button>
+ </div>`).join("");
+}
+
+function quitarFoto(i){
+ fotos.splice(i,1);
+ mostrarPreview();
+}
+
+function guardar(){
+ const nombre=$("nombre").value.trim();
+
+ if(!nombre){
+  alert("Escribe el nombre del cliente.");
+  return;
+ }
+
+ const c={
+  id:actual!==null?actual:Date.now(),
+  nombre:nombre,
+  telefono:$("telefono").value.trim(),
+  documento:$("documento").value.trim(),
+  direccion:$("direccion").value.trim(),
+  ruta:$("ruta").value,
+  prestamo:$("prestamo").value,
+  cuota:$("cuota").value,
+  fecha:$("fecha").value,
+  observaciones:$("observaciones").value.trim(),
+  fotos:[...fotos],
+  foto:fotos[0]||""
+ };
+
+ if(actual!==null){
+  const i=clientes.findIndex(x=>String(x.id)===String(actual));
+  if(i>=0)clientes[i]=c;
+  else clientes.push(c);
+ }else{
+  clientes.push(c);
+ }
+
+ if(guardarDatos()){
+  alert("Cliente guardado correctamente.");
+  inicio();
+ }
+}
+
+function listar(){
+ const buscar=$("buscar").value.toLowerCase().trim();
+ const rutas=["Todas","Ruta 1","Ruta 2","Ruta 3","Ruta 4","Ruta 5","Sin ruta"];
+
+ $("rutas").innerHTML=rutas.map(r=>`
+ <button class="${r===rutaFiltro?"active":""}" onclick="filtrarRuta('${r}')">${r}</button>
+ `).join("");
+
+ const lista=clientes.filter(c=>{
+  normalizar(c);
+  const texto=[
+   c.nombre,c.telefono,c.documento,c.direccion
+  ].join(" ").toLowerCase();
+
+  return texto.includes(buscar)&&
+   (rutaFiltro==="Todas"||(c.ruta||"Sin ruta")===rutaFiltro);
+ });
+
+ $("total").textContent=clientes.length;
+ $("prestamosTotal").textContent=clientes.filter(c=>Number(c.prestamo)>0).length;
+
+ if(!lista.length){
+  $("lista").innerHTML='<div class="empty">No hay clientes.</div>';
+  return;
+ }
+
+ $("lista").innerHTML=lista.map(c=>{
+  const fs=(c.fotos||[]).slice(0,2);
+  const wa=tieneWhatsApp(c.telefono)?`
+   <button class="whatsapp" onclick="whatsapp('${numeroWhatsApp(c.telefono)}')">💬 WhatsApp</button>`:"";
+
+  return `
   <div class="card">
+   <div class="client">
+    <div class="photos-small">
+     ${fs.map((f,i)=>`
+      <img class="avatar" src="${f}" onclick="verGaleriaCliente('${c.id}',${i})">
+     `).join("")}
+    </div>
 
-    <h2 id="tituloFormulario">
-      Nuevo cliente
-    </h2>
+    <div class="info">
+     <b>${escapar(c.nombre)}</b>
+     <div class="small">📞 ${escapar(c.telefono||"Sin teléfono")}</div>
+     <div class="small">📍 ${escapar(c.direccion||"Sin dirección")}</div>
+     <span class="badge">${escapar(c.ruta||"Sin ruta")}</span>
+    </div>
+   </div>
 
+   <div class="actions">
+    <button class="primary" onclick="ver('${c.id}')">👁️ Ver</button>
+    ${wa}
+    <button class="secondary" onclick="editarCliente('${c.id}')">✏️ Editar</button>
+   </div>
+  </div>`;
+ }).join("");
+}
 
-    <label>
-      Nombre completo
-    </label>
+function filtrarRuta(r){
+ rutaFiltro=r;
+ listar();
+}
 
-    <input
-      id="nombre"
-      type="text"
-      placeholder="Nombre del cliente"
-    >
+function ver(id){
+ const c=clientes.find(x=>String(x.id)===String(id));
+ if(!c)return;
+ normalizar(c);
+ actual=c.id;
+ ocultar();
+ $("detalle").classList.remove("hidden");
 
+ const galeria=(c.fotos||[]).length?
+ `<div class="gallery">
+ ${(c.fotos||[]).map((f,i)=>`
+  <img src="${f}" onclick="verGaleriaCliente('${c.id}',${i})">
+ `).join("")}
+ </div>`:
+ '<div class="empty">📷 No hay fotos registradas.</div>';
 
-    <label>
-      Teléfono
-    </label>
+ const wa=tieneWhatsApp(c.telefono)?
+ `<button class="whatsapp" onclick="whatsapp('${numeroWhatsApp(c.telefono)}')">💬 WhatsApp</button>`:"";
 
-    <input
-      id="telefono"
-      type="tel"
-      placeholder="Ej: 51999999999"
-    >
+ const mapa=c.direccion?
+ `<a class="primary" style="display:block;text-align:center;text-decoration:none;padding:11px 14px;border-radius:9px"
+ href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(c.direccion)}&travelmode=driving"
+ target="_blank" rel="noopener">🗺️ Cómo llegar con Google Maps</a>`:"";
 
+const wa=tieneWhatsApp(c.telefono)?
+`<button class="whatsapp" onclick="whatsapp('${numeroWhatsApp(c.telefono)}')">💬 WhatsApp</button>`:"";
 
-    <label>
-      Documento / CPF
-    </label>
+$("detalleContenido").innerHTML=`
+${galeria}
 
-    <input
-      id="documento"
-      type="text"
-      placeholder="Documento"
-    >
+<h2>${escapar(c.nombre)}</h2>
 
+<p><b>📞 Teléfono:</b><br>
+${escapar(c.telefono||"No registrado")}</p>
 
-    <label>
-      Dirección
-    </label>
+<p><b>🪪 Documento:</b><br>
+${escapar(c.documento||"No registrado")}</p>
 
-    <input
-      id="direccion"
-      type="text"
-      placeholder="Dirección completa"
-    >
+<p><b>📍 Dirección:</b><br>
+${escapar(c.direccion||"No registrada")}</p>
 
+<p><b>🚗 Ruta:</b><br>
+${escapar(c.ruta||"Sin ruta")}</p>
 
-    <label>
-      Ruta
-    </label>
+<p><b>💰 Préstamo:</b><br>
+${escapar(c.prestamo||"0")}</p>
 
-    <select id="ruta">
+<p><b>💵 Cuota:</b><br>
+${escapar(c.cuota||"0")}</p>
 
-      <option value="Ruta 1">
-        Ruta 1
-      </option>
+<p><b>📅 Fecha:</b><br>
+${escapar(c.fecha||"No registrada")}</p>
 
-      <option value="Ruta 2">
-        Ruta 2
-      </option>
+<p><b>📝 Observaciones:</b><br>
+${escapar(c.observaciones||"Sin observaciones")}</p>
 
-      <option value="Ruta 3">
-        Ruta 3
-      </option>
+<div class="actions">
+${wa}
+${mapa}
+</div>
+`;
+}
 
-      <option value="Ruta 4">
-        Ruta 4
-      </option>
+function editar(){
+if(actual!==null)editarCliente(actual);
+}
 
-      <option value="Ruta 5">
-        Ruta 5
-      </option>
+function eliminar(){
+if(actual===null)return;
 
-      <option value="Sin ruta">
-        Sin ruta
-      </option>
+const c=clientes.find(x=>String(x.id)===String(actual));
+if(!c)return;
 
-    </select>
+if(!confirm("¿Seguro que quieres eliminar a "+c.nombre+"?"))return;
 
+clientes=clientes.filter(x=>String(x.id)!==String(actual));
 
-    <label>
-      Valor del préstamo
-    </label>
+if(guardarDatos()){
+alert("Cliente eliminado.");
+inicio();
+}
+}
 
-    <input
-      id="prestamo"
-      type="number"
-      step="0.01"
-      placeholder="0.00"
-    >
+function numeroWhatsApp(t){
+let n=String(t||"").replace(/\D/g,"");
 
+if(n.startsWith("00"))n=n.slice(2);
+if(n.startsWith("0"))n=n.slice(1);
 
-    <label>
-      Cuota
-    </label>
+if(n.length===10||n.length===11)n="55"+n;
 
-    <input
-      id="cuota"
-      type="number"
-      step="0.01"
-      placeholder="0.00"
-    >
+return n;
+}
 
+function tieneWhatsApp(t){
+return numeroWhatsApp(t).length>=12;
+}
 
-    <label>
-      Fecha
-    </label>
+function whatsapp(n){
+if(n)window.open("https://wa.me/"+n,"_blank");
+}
 
-    <input
-      id="fecha"
-      type="date"
-    >
+function verGaleriaCliente(id,i){
+const c=clientes.find(x=>String(x.id)===String(id));
 
+if(c){
+normalizar(c);
+abrirGaleria(c.fotos||[],i);
+}
+}
 
-    <label>
-      Observaciones
-    </label>
+function abrirGaleria(lista,i=0){
+if(!lista||!lista.length)return;
 
-    <textarea
-      id="observaciones"
-      rows="3"
-      placeholder="Notas del cliente"
-    ></textarea>
+fotosGaleria=lista;
+indice=Math.max(0,Math.min(i,lista.length-1));
 
+actualizarGaleria();
+$("modal").classList.remove("hidden");
+}
 
-    <label>
-      Fotos del cliente
-    </label>
+function actualizarGaleria(){
+$("imagenGrande").src=fotosGaleria[indice];
+$("contador").textContent=(indice+1)+" / "+fotosGaleria.length;
+}
 
-    <input
-      id="foto"
-      type="file"
-      accept="image/*"
-      multiple
-      onchange="previsualizarFoto()"
-    >
+function anterior(){
+if(!fotosGaleria.length)return;
 
+indice=(indice-1+fotosGaleria.length)%fotosGaleria.length;
 
-    <div
-      id="previewGrid"
-      class="preview-grid"
-    ></div>
+actualizarGaleria();
+}
 
+function siguiente(){
+if(!fotosGaleria.length)return;
 
-    <div class="actions">
+indice=(indice+1)%fotosGaleria.length;
 
-      <button
-        type="button"
-        class="primary"
-        onclick
+actualizarGaleria();
+}
+
+function cerrarModal(e){
+if(e&&e.target!==$("modal"))return;
+
+$("modal").classList.add("hidden");
+$("imagenGrande").src="";
+fotosGaleria=[];
+indice=0;
+}
+
+document.addEventListener("keydown",e=>{
+if($("modal").classList.contains("hidden"))return;
+
+if(e.key==="Escape")cerrarModal();
+
+if(e.key==="ArrowLeft")anterior();
+
+if(e.key==="ArrowRight")siguiente();
+});
+
+cargar();
+listar();
+
+</script>
+
+</body>
+</html>
