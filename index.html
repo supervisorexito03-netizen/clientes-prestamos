@@ -33,16 +33,20 @@ main{padding:15px;max-width:700px;margin:auto}
   margin-bottom:15px;
   box-shadow:0 2px 8px #0001;
 }
-button{
+button, .btn-link{
   border:0;
   border-radius:10px;
   padding:12px 15px;
   font-size:16px;
   cursor:pointer;
+  display:inline-block;
+  text-align:center;
+  text-decoration:none;
 }
 .primary{background:#1565c0;color:white}
 .danger{background:#d32f2f;color:white}
 .secondary{background:#e9eef5;color:#17202a}
+.whatsapp{background:#25d366;color:white;font-weight:bold}
 input,textarea,select{
   width:100%;
   padding:13px;
@@ -52,11 +56,6 @@ input,textarea,select{
   font-size:16px;
 }
 label{font-weight:bold;font-size:14px}
-.grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
-}
 .stats{
   display:grid;
   grid-template-columns:1fr 1fr;
@@ -84,15 +83,36 @@ label{font-weight:bold;font-size:14px}
 .client-info strong{display:block;font-size:18px}
 .small{font-size:13px;color:#68737d}
 .actions{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
-.photo-preview{
+.photo-container{
+  position:relative;
   width:100%;
-  max-height:250px;
-  object-fit:cover;
+  background:#000;
   border-radius:12px;
+  overflow:hidden;
   margin:8px 0;
 }
+.photo-preview{
+  width:100%;
+  max-height:350px;
+  object-fit:contain;
+  display:block;
+}
+.gallery-nav{
+  display:flex;
+  justify-content:space-between;
+  background:rgba(0,0,0,0.6);
+  padding:8px;
+  color:white;
+  align-items:center;
+}
+.gallery-nav button{
+  padding:5px 12px;
+  font-size:14px;
+  background:white;
+  color:black;
+}
 .hidden{display:none}
-.search{
+.search, .filter-select{
   margin-bottom:15px;
 }
 .empty{
@@ -137,10 +157,20 @@ footer{
     </button>
   </div>
 
+  <label>Filtrar por Ruta</label>
+  <select id="filtroRuta" class="filter-select" onchange="mostrarClientes()">
+    <option value="Todas">Todas las rutas</option>
+    <option value="Ruta Centro">Ruta Centro</option>
+    <option value="Ruta Norte">Ruta Norte</option>
+    <option value="Ruta Sur">Ruta Sur</option>
+    <option value="Ruta Este">Ruta Este</option>
+    <option value="Ruta Oeste">Ruta Oeste</option>
+  </select>
+
   <input
     class="search"
     id="buscar"
-    placeholder="🔎 Buscar cliente..."
+    placeholder="🔎 Buscar cliente por nombre, tel o doc..."
     oninput="mostrarClientes()"
   >
 
@@ -155,6 +185,15 @@ footer{
 
     <label>Nombre completo</label>
     <input id="nombre" type="text" placeholder="Nombre del cliente">
+
+    <label>Ruta asignada</label>
+    <select id="ruta">
+      <option value="Ruta Centro">Ruta Centro</option>
+      <option value="Ruta Norte">Ruta Norte</option>
+      <option value="Ruta Sur">Ruta Sur</option>
+      <option value="Ruta Este">Ruta Este</option>
+      <option value="Ruta Oeste">Ruta Oeste</option>
+    </select>
 
     <label>Teléfono</label>
     <input id="telefono" type="tel" placeholder="Teléfono">
@@ -177,10 +216,17 @@ footer{
     <label>Observaciones</label>
     <textarea id="observaciones" rows="3" placeholder="Notas del cliente"></textarea>
 
-    <label>Foto del cliente</label>
-    <input id="foto" type="file" accept="image/*" multiple onchange="previsualizarFoto()">
+    <label>Subir fotos (Puedes seleccionar varias)</label>
+    <input id="foto" type="file" accept="image/*" multiple onchange="previsualizarFotos()">
 
-    <img id="preview" class="photo-preview hidden">
+    <div id="wrapperPreview" class="photo-container hidden">
+      <img id="preview" class="photo-preview">
+      <div id="navPreview" class="gallery-nav hidden">
+        <button type="button" onclick="cambiarFotoPreview(-1)">◀ Ant.</button>
+        <span id="infoPreview">1 de 1</span>
+        <button type="button" onclick="cambiarFotoPreview(1)">Sig. ▶</button>
+      </div>
+    </div>
 
     <div class="actions">
       <button class="primary" onclick="guardarCliente()">💾 Guardar</button>
@@ -211,7 +257,9 @@ footer{
 <script>
 let clientes = JSON.parse(localStorage.getItem("clientesPrestamos") || "[]");
 let clienteActual = null;
-let fotoActual = "";
+let fotosTemporales = [];
+let indicePreviewActual = 0;
+let indiceDetalleActual = 0;
 
 function guardarDatos(){
   localStorage.setItem("clientesPrestamos", JSON.stringify(clientes));
@@ -223,12 +271,15 @@ function mostrarFormulario(id=null){
   document.getElementById("formulario").classList.remove("hidden");
 
   clienteActual = id;
+  fotosTemporales = [];
+  indicePreviewActual = 0;
 
   if(id !== null){
     const c = clientes.find(x => x.id === id);
 
     document.getElementById("tituloFormulario").textContent = "Editar cliente";
     document.getElementById("nombre").value = c.nombre;
+    document.getElementById("ruta").value = c.ruta || "Ruta Centro";
     document.getElementById("telefono").value = c.telefono;
     document.getElementById("documento").value = c.documento;
     document.getElementById("direccion").value = c.direccion;
@@ -236,12 +287,14 @@ function mostrarFormulario(id=null){
     document.getElementById("cuota").value = c.cuota;
     document.getElementById("fecha").value = c.fecha;
     document.getElementById("observaciones").value = c.observaciones;
-    fotoActual = c.foto || "";
-
-    if (fotoActual) {
-      document.getElementById("preview").src = fotoActual;
-      document.getElementById("preview").classList.remove("hidden");
+    
+    if (c.fotos && c.fotos.length > 0) {
+      fotosTemporales = [...c.fotos];
+    } else if (c.foto) {
+      fotosTemporales = [c.foto];
     }
+
+    actualizarVisorPreview();
   } else {
     limpiarFormulario();
     document.getElementById("tituloFormulario").textContent = "Nuevo cliente";
@@ -250,6 +303,7 @@ function mostrarFormulario(id=null){
 
 function limpiarFormulario() {
   document.getElementById("nombre").value = "";
+  document.getElementById("ruta").selectedIndex = 0;
   document.getElementById("telefono").value = "";
   document.getElementById("documento").value = "";
   document.getElementById("direccion").value = "";
@@ -258,267 +312,67 @@ function limpiarFormulario() {
   document.getElementById("fecha").value = "";
   document.getElementById("observaciones").value = "";
   document.getElementById("foto").value = "";
-  document.getElementById("preview").src = "";
-  document.getElementById("preview").classList.add("hidden");
-  fotoActual = "";
+  fotosTemporales = [];
+  indicePreviewActual = 0;
+  actualizarVisorPreview();
 }
 
-function previsualizarFoto() {
+function previsualizarFotos() {
   const archivos = document.getElementById("foto").files;
-
   if (!archivos || archivos.length === 0) return;
 
   const lectores = [];
-
   for (let i = 0; i < archivos.length; i++) {
     lectores.push(new Promise((resolve, reject) => {
       const lector = new FileReader();
-
-      lector.onload = function(e) {
-        resolve(e.target.result);
-      };
-
+      lector.onload = e => resolve(e.target.result);
       lector.onerror = reject;
       lector.readAsDataURL(archivos[i]);
     }));
   }
 
-  Promise.all(lectores).then(function(fotos) {
-    fotoActual = fotos;
-    
-    const preview = document.getElementById("preview");
-    preview.src = fotos[0];
-    preview.classList.remove("hidden");
+  Promise.all(lectores).then(fotosBase64 => {
+    fotosTemporales = fotosBase64;
+    indicePreviewActual = 0;
+    actualizarVisorPreview();
   });
+}
+
+function actualizarVisorPreview() {
+  const wrapper = document.getElementById("wrapperPreview");
+  const img = document.getElementById("preview");
+  const nav = document.getElementById("navPreview");
+  const info = document.getElementById("infoPreview");
+
+  if (fotosTemporales.length > 0) {
+    wrapper.classList.remove("hidden");
+    img.src = fotosTemporales[indicePreviewActual];
+    
+    if (fotosTemporales.length > 1) {
+      nav.classList.remove("hidden");
+      info.textContent = `${indicePreviewActual + 1} de ${fotosTemporales.length}`;
+    } else {
+      nav.classList.add("hidden");
+    }
+  } else {
+    wrapper.classList.add("hidden");
+    img.src = "";
+    nav.classList.add("hidden");
+  }
+}
+
+function cambiarFotoPreview(direccion) {
+  indicePreviewActual += direccion;
+  if (indicePreviewActual < 0) indicePreviewActual = fotosTemporales.length - 1;
+  if (indicePreviewActual >= fotosTemporales.length) indicePreviewActual = 0;
+  actualizarVisorPreview();
 }
 
 function guardarCliente() {
   const nombre = document.getElementById("nombre").value.trim();
 
-  if (!nombre) {
-    alert("Escribe el nombre del cliente.");
-    return;
-  }
-
-  const cliente = {
-    id: clienteActual !== null ? clienteActual : Date.now(),
-    nombre: nombre,
-    telefono: document.getElementById("telefono").value.trim(),
-    documento: document.getElementById("documento").value.trim(),
-    direccion: document.getElementById("direccion").value.trim(),
-    prestamo: document.getElementById("prestamo").value,
-    cuota: document.getElementById("cuota").value,
-    fecha: document.getElementById("fecha").value,
-    observaciones: document.getElementById("observaciones").value.trim(),
-    fotos: Array.isArray(fotoActual) ? fotoActual : (fotoActual ? [fotoActual] : []),
-foto: Array.isArray(fotoActual) ? fotoActual[0] : (fotoActual || "")
-  };
-
-  if (clienteActual !== null) {
-    const indice = clientes.findIndex(x => x.id === clienteActual);
-
-    if (indice !== -1) {
-      clientes[indice] = cliente;
-    }
-  } else {
-    clientes.push(cliente);
-  }
-
-  guardarDatos();
-  clienteActual = null;
-  fotoActual = "";
-
-  mostrarClientes();
-  volverInicio();
-
-  alert("Cliente guardado correctamente.");
-}
-
-function mostrarClientes() {
-  const lista = document.getElementById("listaClientes");
-  const buscar = document.getElementById("buscar").value.toLowerCase().trim();
-
-  const filtrados = clientes.filter(c =>
-    (c.nombre || "").toLowerCase().includes(buscar) ||
-    (c.telefono || "").toLowerCase().includes(buscar) ||
-    (c.documento || "").toLowerCase().includes(buscar)
-  );
-
-  document.getElementById("totalClientes").textContent = clientes.length;
-
-  document.getElementById("totalPrestamos").textContent =
-    clientes.filter(c => Number(c.prestamo) > 0).length;
-
-  if (filtrados.length === 0) {
-    lista.innerHTML = `
-      <div class="empty">
-        No hay clientes registrados.
-      </div>
-    `;
-    return;
-  }
-
-  lista.innerHTML = filtrados.map(c => `
-    <div class="card">
-      <div class="client">
-        ${
-    (Array.isArray(c.fotos) ? c.fotos : (c.foto ? [c.foto] : []))
-        .map(foto => `<img class="avatar" src="${foto}">`)
-        .join("")
-        }
-
-        <div class="client-info">
-          <strong>${escapar(c.nombre)}</strong>
-          <div class="small">
-            ${escapar(c.telefono || "Sin teléfono")}
-          </div>
-          <div class="small">
-            ${escapar(c.direccion || "Sin dirección")}
-          </div>
-        </div>
-      </div>
-
-      <div class="actions">
-        <button class="primary" onclick="verCliente(${c.id})">
-          👁️ Ver
-        </button>
-
-        <button class="secondary" onclick="mostrarFormulario(${c.id})">
-          ✏️ Editar
-        </button>
-      </div>
-    </div>
-  `).join("");
-}
-
-function verCliente(id) {
-  const c = clientes.find(x => x.id === id);
-
-  if (!c) return;
-
-  clienteActual = id;
-
-  document.getElementById("home").classList.add("hidden");
-  document.getElementById("formulario").classList.add("hidden");
-  document.getElementById("detalle").classList.remove("hidden");
-
-  const mapa = c.direccion
-    ? `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(c.direccion)}`
-    : "";
-
-  document.getElementById("detalleContenido").innerHTML = `
-    ${
-      c.foto
-      ? `<img src="${c.foto}" class="photo-preview">`
-      : ""
-    }
-
-    <h2>${escapar(c.nombre)}</h2>
-
-    <p><strong>📞 Teléfono:</strong><br>
-    ${escapar(c.telefono || "No registrado")}</p>
-
-    <p><strong>🪪 Documento / CPF:</strong><br>
-    ${escapar(c.documento || "No registrado")}</p>
-
-    <p><strong>🏠 Dirección:</strong><br>
-    ${escapar(c.direccion || "No registrada")}</p>
-
-    <p><strong>💰 Préstamo:</strong><br>
-    ${escapar(c.prestamo || "0")}</p>
-
-    <p><strong>💵 Cuota:</strong><br>
-    ${escapar(c.cuota || "0")}</p>
-
-    <p><strong>📅 Fecha:</strong><br>
-    ${escapar(c.fecha || "No registrada")}</p>
-
-    <p><strong>📝 Observaciones:</strong><br>
-    ${escapar(c.observaciones || "Sin observaciones")}</p>
-
-    ${
-      mapa
-      ? `
-        <div class="actions">
-          <a
-            href="${mapa}"
-            target="_blank"
-            rel="noopener"
-            style="
-              display:block;
-              width:100%;
-              text-align:center;
-              text-decoration:none;
-              background:#1565c0;
-              color:white;
-              padding:12px 15px;
-              border-radius:10px;
-              font-size:16px;
-            ">
-            🗺️ Cómo llegar con Google Maps
-          </a>
-        </div>
-      `
-      : ""
-    }
-  `;
-}
-
-function editarCliente() {
-  if (clienteActual !== null) {
-    mostrarFormulario(clienteActual);
-  }
-}
-
-function eliminarCliente() {
-  if (clienteActual === null) return;
-
-  const c = clientes.find(x => x.id === clienteActual);
-
-  if (!c) return;
-
-  if (!confirm(`¿Eliminar a ${c.nombre}?`)) {
-    return;
-  }
-
-  clientes = clientes.filter(x => x.id !== clienteActual);
-
-  guardarDatos();
-
-  clienteActual = null;
-
-  mostrarClientes();
-  volverInicio();
-}
-
-function cancelarFormulario() {
-  clienteActual = null;
-  fotoActual = "";
-  limpiarFormulario();
-  volverInicio();
-}
-
-function volverInicio() {
-  document.getElementById("formulario").classList.add("hidden");
-  document.getElementById("detalle").classList.add("hidden");
-  document.getElementById("home").classList.remove("hidden");
-
-  mostrarClientes();
-}
-
-function escapar(texto) {
-  return String(texto)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
-}
-
-mostrarClientes();
-
-</script>
-
-</body>
-</html>
-   
+  if (!nombre) {$ ${escapar(c.cuota || "0")}📅 Fecha:${escapar(c.fecha || "No registrada")}📝 Observaciones:${escapar(c.observaciones || "Sin observaciones")}`;}function cambiarFotoDetalle(direccion) {const c = clientes.find(x => x.id === clienteActual);if (!c) return;const listaFotos = c.fotos && c.fotos.length > 0 ? c.fotos : (c.foto ? [c.foto] : []);indiceDetalleActual += direccion;if (indiceDetalleActual < 0) indiceDetalleActual = listaFotos.length - 1;if (indiceDetalleActual >= listaFotos.length) indiceDetalleActual = 0;document.getElementById("imgDetalle").src = listaFotos[indiceDetalleActual];document.getElementById("infoDetalle").textContent = ${indiceDetalleActual + 1} de ${listaFotos.length};}function editarCliente() {if (clienteActual !== null) {mostrarFormulario(clienteActual);}}function eliminarCliente() {if (clienteActual === null) return;const c = clientes.find(x => x.id === clienteActual);if (!c || !confirm(¿Eliminar a ${c.nombre}?)) return;clientes = clientes.filter(x => x.id !== clienteActual);guardarDatos();clienteActual = null;mostrarClientes();volverInicio();}function cancelarFormulario() {clienteActual = null;fotosTemporales = [];limpiarFormulario();volverInicio();}function volverInicio() {document.getElementById("formulario").classList.add("hidden");document.getElementById("detalle").classList.add("hidden");document.getElementById("home").classList.remove("hidden");mostrarClientes();}function escapar(texto) {return String(texto || "").replace(/&/g, "&").replace(/</g, "<").replace(/>/g, ">").replace(/"/g, """).replace(/'/g, "'");}mostrarClientes();
+<FollowUp>$ ${escapar(c.cuota || "0")}📅 Fecha:${escapar(c.fecha || "No registrada")}📝 Observaciones:${escapar(c.observaciones || "Sin observaciones")}`;}function cambiarFotoDetalle(direccion) {const c = clientes.find(x => x.id === clienteActual);if (!c) return;const listaFotos = c.fotos && c.fotos.length > 0 ? c.fotos : (c.foto ? [c.foto] : []);indiceDetalleActual += direccion;if (indiceDetalleActual < 0) indiceDetalleActual = listaFotos.length - 1;if (indiceDetalleActual >= listaFotos.length) indiceDetalleActual = 0;document.getElementById("imgDetalle").src = listaFotos[indiceDetalleActual];document.getElementById("infoDetalle").textContent = ${indiceDetalleActual + 1} de ${listaFotos.length};}function editarCliente() {if (clienteActual !== null) {mostrarFormulario(clienteActual);}}function eliminarCliente() {if (clienteActual === null) return;const c = clientes.find(x => x.id === clienteActual);if (!c || !confirm(¿Eliminar a ${c.nombre}?)) return;clientes = clientes.filter(x => x.id !== clienteActual);guardarDatos();clienteActual = null;mostrarClientes();volverInicio();}function cancelarFormulario() {clienteActual = null;fotosTemporales = [];limpiarFormulario();volverInicio();}function volverInicio() {document.getElementById("formulario").classList.add("hidden");document.getElementById("detalle").classList.add("hidden");document.getElementById("home").classList.remove("hidden");mostrarClientes();}function escapar(texto) {return String(texto || "").replace(/&/g, "&").replace(/</g, "<").replace(/>/g, ">").replace(/"/g, """).replace(/'/g, "'");}mostrarClientes();
+<FollowUp>
+  $ ${escapar(c.cuota || "0")}📅 Fecha:${escapar(c.fecha || "No registrada")}📝 Observaciones:${escapar(c.observaciones || "Sin observaciones")}`;}function cambiarFotoDetalle(direccion) {const c = clientes.find(x => x.id === clienteActual);if (!c) return;const listaFotos = c.fotos && c.fotos.length > 0 ? c.fotos : (c.foto ? [c.foto] : []);indiceDetalleActual += direccion;if (indiceDetalleActual < 0) indiceDetalleActual = listaFotos.length - 1;if (indiceDetalleActual >= listaFotos.length) indiceDetalleActual = 0;document.getElementById("imgDetalle").src = listaFotos[indiceDetalleActual];document.getElementById("infoDetalle").textContent = ${indiceDetalleActual + 1} de ${listaFotos.length};}function editarCliente() {if (clienteActual !== null) {mostrarFormulario(clienteActual);}}function eliminarCliente() {if (clienteActual === null) return;const c = clientes.find(x => x.id === clienteActual);if (!c || !confirm(¿Eliminar a ${c.nombre}?)) return;clientes = clientes.filter(x => x.id !== clienteActual);guardarDatos();clienteActual = null;mostrarClientes();volverInicio();}function cancelarFormulario() {clienteActual = null;fotosTemporales = [];limpiarFormulario();volverInicio();}function volverInicio() {document.getElementById("formulario").classList.add("hidden");document.getElementById("detalle").classList.add("hidden");document.getElementById("home").classList.remove("hidden");mostrarClientes();}function escapar(texto) {return String(texto || "").replace(/&/g, "&").replace(/</g, "<").replace(/>/g, ">").replace(/"/g, """).replace(/'/g, "'");}mostrarClientes();
+<FollowUp>
