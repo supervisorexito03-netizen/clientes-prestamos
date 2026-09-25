@@ -471,20 +471,59 @@ function editarCliente(id){
  mostrarPreview();
 }
 
-function cargarFotos(){
- const archivos=[...$("foto").files];
- if(!archivos.length)return;
+function comprimirFoto(archivo){
+  return new Promise((resolve,reject)=>{
+    const r=new FileReader();
 
- Promise.all(archivos.map(a=>new Promise((resolve,reject)=>{
-  const r=new FileReader();
-  r.onload=e=>resolve(e.target.result);
-  r.onerror=reject;
-  r.readAsDataURL(a);
- }))).then(nuevas=>{
-  fotos=fotos.concat(nuevas);
-  mostrarPreview();
-  $("foto").value="";
- }).catch(()=>alert("No se pudo cargar una foto."));
+    r.onload=e=>{
+      const img=new Image();
+
+      img.onload=()=>{
+        const max=1280;
+
+        let w=img.width;
+        let h=img.height;
+
+        if(w>max||h>max){
+          if(w>h){
+            h=Math.round(h*max/w);
+            w=max;
+          }else{
+            w=Math.round(w*max/h);
+            h=max;
+          }
+        }
+
+        const canvas=document.createElement("canvas");
+        canvas.width=w;
+        canvas.height=h;
+
+        const ctx=canvas.getContext("2d");
+        ctx.drawImage(img,0,0,w,h);
+
+        resolve(canvas.toDataURL("image/jpeg",0.72));
+      };
+
+      img.onerror=reject;
+      img.src=e.target.result;
+    };
+
+    r.onerror=reject;
+    r.readAsDataURL(archivo);
+  });
+}
+
+function cargarFotos(){
+  const archivos=[...$("foto").files];
+  if(!archivos.length)return;
+
+  Promise.all(archivos.map(comprimirFoto))
+  .then(nuevas=>{
+    fotos=fotos.concat(nuevas);
+    mostrarPreview();
+    $("foto").value="";
+  })
+  .catch(()=>alert("No se pudo procesar una foto."));
 }
 
 function mostrarPreview(){
