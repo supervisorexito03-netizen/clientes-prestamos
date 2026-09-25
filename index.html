@@ -1008,47 +1008,105 @@ if(e.key==="ArrowRight")siguiente();
     codigo.focus();
   },100);
 })();
- async function cargarDesdeNube(){
-  try{
-    const respuesta=await fetch(SERVIDOR_URL);
-    const resultado=await respuesta.json();
+ function cargarDesdeNube(){
 
-    if(!resultado.ok||!resultado.datos)return;
+  const nombreCallback =
+    "recibirDatosNube_" + Date.now();
 
-    const datos=resultado.datos;
+  let script = null;
 
-    const nubeClientes=Array.isArray(datos.clientes)
-      ? datos.clientes
-      : [];
+  window[nombreCallback] = function(resultado){
 
-    const nubeRutas=Array.isArray(datos.rutas)
-      ? datos.rutas
-      : [];
+    try{
 
-    if(nubeClientes.length||nubeRutas.length){
-      clientes=nubeClientes.map(normalizar).filter(Boolean);
-
-      if(nubeRutas.length){
-        rutas=nubeRutas.filter(x=>String(x).trim());
+      if(
+        !resultado ||
+        !resultado.ok ||
+        !resultado.datos
+      ){
+        return;
       }
 
-      localStorage.setItem(
-        KEY,
-        JSON.stringify(clientes)
-      );
+      const datos = resultado.datos;
 
-      localStorage.setItem(
-        RUTAS_KEY,
-        JSON.stringify(rutas)
-      );
+      const nubeClientes =
+        Array.isArray(datos.clientes)
+          ? datos.clientes
+          : [];
 
-      actualizarSelectRutas();
-      listar();
+      const nubeRutas =
+        Array.isArray(datos.rutas)
+          ? datos.rutas
+          : [];
+
+      if(
+        nubeClientes.length ||
+        nubeRutas.length
+      ){
+
+        clientes =
+          nubeClientes
+            .map(normalizar)
+            .filter(Boolean);
+
+        if(nubeRutas.length){
+
+          rutas =
+            nubeRutas.filter(
+              x => String(x).trim()
+            );
+
+        }
+
+        localStorage.setItem(
+          KEY,
+          JSON.stringify(clientes)
+        );
+
+        localStorage.setItem(
+          RUTAS_KEY,
+          JSON.stringify(rutas)
+        );
+
+        actualizarSelectRutas();
+
+        listar();
+      }
+
+    }finally{
+
+      delete window[nombreCallback];
+
+      if(script){
+        script.remove();
+      }
+
     }
 
-  }catch(e){
-    console.error("No se pudo cargar desde la nube:",e);
-  }
+  };
+
+  script = document.createElement("script");
+
+  script.src =
+    SERVIDOR_URL +
+    "?callback=" +
+    encodeURIComponent(nombreCallback);
+
+  script.onerror = function(){
+
+    console.error(
+      "No se pudo cargar desde la nube."
+    );
+
+    delete window[nombreCallback];
+
+    if(script){
+      script.remove();
+    }
+
+  };
+
+  document.head.appendChild(script);
  }
 cargarRutas();
  cargar();
