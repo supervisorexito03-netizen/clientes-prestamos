@@ -4,17 +4,20 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#1565c0">
-<meta name="description" content="Control de clientes y préstamos">
 <title>Clientes Préstamos</title>
 
 <style>
-*{box-sizing:border-box}
+*{
+  box-sizing:border-box;
+}
+
 body{
   margin:0;
   font-family:Arial,sans-serif;
   background:#f4f6f8;
   color:#17202a;
 }
+
 header{
   background:#1565c0;
   color:white;
@@ -23,9 +26,23 @@ header{
   top:0;
   z-index:10;
 }
-header h1{margin:0;font-size:25px}
-header p{margin:5px 0 0;opacity:.9}
-main{padding:15px;max-width:700px;margin:auto}
+
+header h1{
+  margin:0;
+  font-size:25px;
+}
+
+header p{
+  margin:5px 0 0;
+  opacity:.9;
+}
+
+main{
+  padding:15px;
+  max-width:700px;
+  margin:auto;
+}
+
 .card{
   background:white;
   border-radius:16px;
@@ -33,6 +50,7 @@ main{padding:15px;max-width:700px;margin:auto}
   margin-bottom:15px;
   box-shadow:0 2px 8px #0001;
 }
+
 button{
   border:0;
   border-radius:10px;
@@ -40,31 +58,52 @@ button{
   font-size:16px;
   cursor:pointer;
 }
-.primary{background:#1565c0;color:white}
-.danger{background:#d32f2f;color:white}
-.secondary{background:#e9eef5;color:#17202a}
-.whatsapp{background:#25D366;color:white}
-.grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
+
+.primary{
+  background:#1565c0;
+  color:white;
 }
+
+.danger{
+  background:#d32f2f;
+  color:white;
+}
+
+.secondary{
+  background:#e9eef5;
+  color:#17202a;
+}
+
+.whatsapp{
+  background:#25D366;
+  color:white;
+}
+
 .stats{
   display:grid;
   grid-template-columns:1fr 1fr;
   gap:10px;
+  margin-bottom:15px;
 }
+
 .stat{
   padding:15px;
   border-radius:14px;
   background:#eef5ff;
 }
-.stat strong{display:block;font-size:24px}
+
+.stat strong{
+  display:block;
+  font-size:24px;
+  margin-top:4px;
+}
+
 .client{
   display:flex;
   gap:12px;
   align-items:center;
 }
+
 .client-photos{
   display:flex;
   gap:5px;
@@ -72,6 +111,7 @@ button{
   width:125px;
   flex-shrink:0;
 }
+
 .avatar{
   width:58px;
   height:58px;
@@ -80,9 +120,25 @@ button{
   background:#dbe8f8;
   cursor:pointer;
 }
-.client-info{flex:1}
-.client-info strong{display:block;font-size:18px}
-.small{font-size:13px;color:#68737d}
+
+.client-info{
+  flex:1;
+  min-width:0;
+}
+
+.client-info strong{
+  display:block;
+  font-size:18px;
+  margin-bottom:4px;
+}
+
+.small{
+  font-size:13px;
+  color:#68737d;
+  margin-top:3px;
+  word-break:break-word;
+}
+
 .route-badge{
   display:inline-block;
   background:#e3f2fd;
@@ -91,24 +147,54 @@ button{
   padding:5px 9px;
   font-size:12px;
   font-weight:bold;
-  margin-top:5px;
+  margin-top:6px;
 }
+
 .route-filters{
   display:flex;
   gap:7px;
   overflow-x:auto;
   padding:2px 0 12px;
 }
+
 .route-filters button{
   white-space:nowrap;
   padding:9px 12px;
   font-size:14px;
   background:#e9eef5;
 }
+
 .route-filters button.active{
   background:#1565c0;
   color:white;
 }
+
+.search{
+  margin-bottom:10px;
+}
+
+input,
+select,
+textarea{
+  width:100%;
+  padding:12px;
+  border:1px solid #ccd3da;
+  border-radius:10px;
+  font-size:16px;
+  background:white;
+}
+
+textarea{
+  resize:vertical;
+}
+
+label{
+  display:block;
+  margin-top:12px;
+  margin-bottom:5px;
+  font-weight:bold;
+}
+
 .photo-preview{
   width:100%;
   max-height:250px;
@@ -116,15 +202,18 @@ button{
   border-radius:12px;
   margin:8px 0;
 }
+
 .preview-grid{
   display:grid;
   grid-template-columns:repeat(3,1fr);
   gap:8px;
-  margin:8px 0;
+  margin:10px 0;
 }
+
 .preview-item{
   position:relative;
 }
+
 .preview-item img{
   width:100%;
   height:100px;
@@ -133,6 +222,7 @@ button{
   display:block;
   cursor:pointer;
 }
+
 .remove-photo{
   position:absolute;
   top:4px;
@@ -145,26 +235,37 @@ button{
   color:white;
   font-size:18px;
 }
-.hidden{display:none}
-.search{margin-bottom:10px}
+
+.hidden{
+  display:none !important;
+}
+
 .empty{
   text-align:center;
   padding:30px 10px;
   color:#69757d;
 }
+
 .actions{
   display:flex;
   gap:8px;
   margin-top:12px;
   flex-wrap:wrap;
 }
-.actions button,.actions a{flex:1;min-width:140px}
+
+.actions button,
+.actions a{
+  flex:1;
+  min-width:140px;
+}
+
 .detail-gallery{
   display:grid;
   grid-template-columns:repeat(2,1fr);
   gap:10px;
   margin-bottom:18px;
 }
+
 .detail-gallery img{
   width:100%;
   height:180px;
@@ -172,6 +273,7 @@ button{
   border-radius:12px;
   cursor:pointer;
 }
+
 .no-photo{
   background:#eef2f5;
   border-radius:12px;
@@ -180,6 +282,7 @@ button{
   color:#69757d;
   margin-bottom:18px;
 }
+
 .gallery-modal{
   position:fixed;
   inset:0;
@@ -190,7 +293,7 @@ button{
   justify-content:center;
   padding:15px;
 }
-.gallery-modal.hidden{display:none}
+
 .gallery-content{
   width:100%;
   max-width:700px;
@@ -199,12 +302,14 @@ button{
   align-items:center;
   gap:12px;
 }
+
 .gallery-image{
   max-width:100%;
   max-height:75vh;
   object-fit:contain;
   border-radius:10px;
 }
+
 .gallery-top{
   width:100%;
   display:flex;
@@ -212,10 +317,12 @@ button{
   align-items:center;
   color:white;
 }
+
 .gallery-counter{
   font-size:16px;
   font-weight:bold;
 }
+
 .gallery-close{
   background:white;
   color:#17202a;
@@ -225,41 +332,56 @@ button{
   border-radius:50%;
   font-size:25px;
 }
+
 .gallery-controls{
   display:flex;
   gap:15px;
 }
+
 .gallery-controls button{
   background:white;
   color:#17202a;
   min-width:120px;
 }
-label{
-  display:block;
-  margin-top:12px;
-  margin-bottom:5px;
-  font-weight:bold;
+
+.error-box{
+  background:#ffebee;
+  color:#b71c1c;
+  padding:15px;
+  border-radius:12px;
+  margin-bottom:15px;
+  font-size:14px;
 }
-input,select,textarea{
-  width:100%;
-  padding:12px;
-  border:1px solid #ccd3da;
-  border-radius:10px;
-  font-size:16px;
-  background:white;
-}
-textarea{resize:vertical}
+
 footer{
   text-align:center;
   color:#7b858d;
   font-size:12px;
   padding:20px;
 }
+
 @media(max-width:430px){
-  .client-photos{width:80px}
-  .client-photos .avatar{width:38px;height:38px}
-  .detail-gallery img{height:150px}
-  .preview-grid{grid-template-columns:repeat(2,1fr)}
+
+  .client-photos{
+    width:80px;
+  }
+
+  .client-photos .avatar{
+    width:38px;
+    height:38px;
+  }
+
+  .detail-gallery img{
+    height:150px;
+  }
+
+  .preview-grid{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  .gallery-controls button{
+    min-width:105px;
+  }
 }
 </style>
 </head>
@@ -273,9 +395,12 @@ footer{
 
 <main>
 
+<div id="mensajeError" class="error-box hidden"></div>
+
 <section id="home">
 
   <div class="stats">
+
     <div class="stat">
       <span>Clientes</span>
       <strong id="totalClientes">0</strong>
@@ -285,70 +410,193 @@ footer{
       <span>Préstamos</span>
       <strong id="totalPrestamos">0</strong>
     </div>
+
   </div>
 
   <div class="card">
-    <button class="primary" style="width:100%" onclick="mostrarFormulario()">
+
+    <button
+      type="button"
+      class="primary"
+      style="width:100%"
+      onclick="mostrarFormulario()"
+    >
       ➕ Nuevo cliente
     </button>
+
   </div>
 
   <input
     class="search"
     id="buscar"
+    type="search"
     placeholder="🔎 Buscar por nombre, teléfono, documento o dirección..."
     oninput="mostrarClientes()"
   >
 
-  <div id="filtrosRuta" class="route-filters"></div>
+  <div
+    id="filtrosRuta"
+    class="route-filters"
+  ></div>
 
   <div id="listaClientes"></div>
 
 </section>
 
+
 <section id="formulario" class="hidden">
 
   <div class="card">
 
-    <h2 id="tituloFormulario">Nuevo cliente</h2>
+    <h2 id="tituloFormulario">
+      Nuevo cliente
+    </h2>
 
-    <label>Nombre completo</label>
-    <input id="nombre" type="text" placeholder="Nombre del cliente">
 
-    <label>Teléfono</label>
-    <input id="telefono" type="tel" placeholder="Ej: 51999999999">
+    <label>
+      Nombre completo
+    </label>
 
-    <label>Documento / CPF</label>
-    <input id="documento" type="text" placeholder="Documento">
+    <input
+      id="nombre"
+      type="text"
+      placeholder="Nombre del cliente"
+    >
 
-    <label>Dirección</label>
-    <input id="direccion" type="text" placeholder="Dirección completa">
 
-    <label>Ruta</label>
+    <label>
+      Teléfono
+    </label>
+
+    <input
+      id="telefono"
+      type="tel"
+      placeholder="Ej: 51999999999"
+    >
+
+
+    <label>
+      Documento / CPF
+    </label>
+
+    <input
+      id="documento"
+      type="text"
+      placeholder="Documento"
+    >
+
+
+    <label>
+      Dirección
+    </label>
+
+    <input
+      id="direccion"
+      type="text"
+      placeholder="Dirección completa"
+    >
+
+
+    <label>
+      Ruta
+    </label>
+
     <select id="ruta">
-      <option value="Ruta 1">Ruta 1</option>
-      <option value="Ruta 2">Ruta 2</option>
-      <option value="Ruta 3">Ruta 3</option>
-      <option value="Ruta 4">Ruta 4</option>
-      <option value="Ruta 5">Ruta 5</option>
-      <option value="Sin ruta">Sin ruta</option>
+
+      <option value="Ruta 1">
+        Ruta 1
+      </option>
+
+      <option value="Ruta 2">
+        Ruta 2
+      </option>
+
+      <option value="Ruta 3">
+        Ruta 3
+      </option>
+
+      <option value="Ruta 4">
+        Ruta 4
+      </option>
+
+      <option value="Ruta 5">
+        Ruta 5
+      </option>
+
+      <option value="Sin ruta">
+        Sin ruta
+      </option>
+
     </select>
 
-    <label>Valor del préstamo</label>
-    <input id="prestamo" type="number" step="0.01" placeholder="0.00">
 
-    <label>Cuota</label>
-    <input id="cuota" type="number" step="0.01" placeholder="0.00">
+    <label>
+      Valor del préstamo
+    </label>
 
-    <label>Fecha</label>
-    <input id="fecha" type="date">
+    <input
+      id="prestamo"
+      type="number"
+      step="0.01"
+      placeholder="0.00"
+    >
 
-    <label>Observaciones</label>
-    <textarea id="observaciones" rows="3" placeholder="Notas del cliente"></textarea>
 
-    <label>Fotos del cliente</label>
+    <label>
+      Cuota
+    </label>
+
+    <input
+      id="cuota"
+      type="number"
+      step="0.01"
+      placeholder="0.00"
+    >
+
+
+    <label>
+      Fecha
+    </label>
+
+    <input
+      id="fecha"
+      type="date"
+    >
+
+
+    <label>
+      Observaciones
+    </label>
+
+    <textarea
+      id="observaciones"
+      rows="3"
+      placeholder="Notas del cliente"
+    ></textarea>
+
+
+    <label>
+      Fotos del cliente
+    </label>
 
     <input
       id="foto"
       type="file"
-      accept
+      accept="image/*"
+      multiple
+      onchange="previsualizarFoto()"
+    >
+
+
+    <div
+      id="previewGrid"
+      class="preview-grid"
+    ></div>
+
+
+    <div class="actions">
+
+      <button
+        type="button"
+        class="primary"
+        onclick
