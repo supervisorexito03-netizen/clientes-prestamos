@@ -865,7 +865,122 @@ if(e.key==="ArrowLeft")anterior();
 
 if(e.key==="ArrowRight")siguiente();
 });
+(function(){
+  const estilo=document.createElement("style");
 
+  estilo.textContent=`
+    body.bloqueada{
+      overflow:hidden;
+    }
+
+    #pantallaAcceso{
+      position:fixed;
+      inset:0;
+      z-index:999999;
+      background:#1565c0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:20px;
+    }
+
+    #cajaAcceso{
+      width:100%;
+      max-width:360px;
+      background:white;
+      border-radius:18px;
+      padding:30px 22px;
+      text-align:center;
+      box-shadow:0 10px 30px rgba(0,0,0,.25);
+    }
+
+    #cajaAcceso h2{
+      margin:0 0 10px;
+      color:#1565c0;
+    }
+
+    #cajaAcceso p{
+      margin:0 0 20px;
+      color:#555;
+    }
+
+    #codigoAcceso{
+      width:100%;
+      box-sizing:border-box;
+      text-align:center;
+      font-size:28px;
+      letter-spacing:8px;
+      padding:14px;
+      border:2px solid #ddd;
+      border-radius:10px;
+      margin-bottom:15px;
+    }
+
+    #entrarAcceso{
+      width:100%;
+      background:#1565c0;
+      color:white;
+      border:0;
+      border-radius:10px;
+      padding:14px;
+      font-size:18px;
+      font-weight:bold;
+    }
+  `;
+
+  document.head.appendChild(estilo);
+
+  document.body.classList.add("bloqueada");
+
+  const pantalla=document.createElement("div");
+  pantalla.id="pantallaAcceso";
+
+  pantalla.innerHTML=`
+    <div id="cajaAcceso">
+      <div style="font-size:48px">🔐</div>
+      <h2>Clientes Préstamos</h2>
+      <p>Introduce el código para entrar</p>
+
+      <input
+        id="codigoAcceso"
+        type="password"
+        inputmode="numeric"
+        maxlength="4"
+        placeholder="••••"
+      >
+
+      <button id="entrarAcceso">ENTRAR</button>
+    </div>
+  `;
+
+  document.body.appendChild(pantalla);
+
+  const codigo=document.getElementById("codigoAcceso");
+  const entrar=document.getElementById("entrarAcceso");
+
+  function verificarCodigo(){
+    if(codigo.value==="1998"){
+      pantalla.remove();
+      document.body.classList.remove("bloqueada");
+    }else{
+      alert("❌ Código incorrecto");
+      codigo.value="";
+      codigo.focus();
+    }
+  }
+
+  entrar.addEventListener("click",verificarCodigo);
+
+  codigo.addEventListener("keydown",e=>{
+    if(e.key==="Enter"){
+      verificarCodigo();
+    }
+  });
+
+  setTimeout(()=>{
+    codigo.focus();
+  },100);
+})();
 cargarRutas();
  cargar();
 listar();
