@@ -419,6 +419,32 @@ function guardarDatos(){
   return false;
  }
 }
+ const SERVIDOR_URL="https://script.google.com/macros/s/AKfycbxFcRr4Gz8JfutMOYn8z-ctCR0lNWl2KBlUHMpJqHM0WrEPqEYa_TdReh3pTU9-LpVJ/exec";
+
+async function guardarEnNube(){
+  try{
+    const datos={
+      clientes:clientes,
+      rutas:rutas
+    };
+
+    const respuesta=await fetch(SERVIDOR_URL+"?token=1998",{
+      method:"POST",
+      headers:{
+        "Content-Type":"text/plain;charset=utf-8"
+      },
+      body:JSON.stringify(datos)
+    });
+
+    const resultado=await respuesta.json();
+
+    if(!resultado.ok){
+      console.error("Error al guardar en nube:",resultado.error);
+    }
+  }catch(e){
+    console.error("No se pudo conectar con el servidor:",e);
+  }
+}
    function hacerCopiaSeguridad(){
     const copia={
       clientes:clientes,
